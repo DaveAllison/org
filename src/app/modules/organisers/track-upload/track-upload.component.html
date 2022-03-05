@@ -1,0 +1,64 @@
+<div class="container">
+    <h2>Track File Upload</h2>
+    <p class="text-danger font-weight-bold">This is experimental! </p>
+    <p>If you have a track file for your ride, you can upload it here and it will be compared with the route controls. File formats accepted are .gpx, .tcx and .fit,
+        and you can create a zip archive of these if you have multiple files.</p>
+    <p>You will receive an e-mail confirming validation of your track, and once validated a "completed event" entry will
+        be created</p>
+    <form #uploadForm="ngForm" (ngSubmit)="upload()">
+        <div *ngIf="isOrg()">
+            <hr>
+            <p>This section is only visible to organisers - you can upload a track on a rider's behalf. NB if you leave this blank, the rider will be set to you!</p>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label audax-label">Mem No:</label>
+                <input type=number name="memNum" id="memNum" class="form-control col-sm-2" [(ngModel)]="memNum">
+                <label class="col-sm-2 col-form-label audax-label">Mem Name:</label>
+                <input class="form-control col-sm-4" name="memName" id="memName" [(ngModel)]="memName">
+            </div>
+            <hr>
+        </div>
+
+        <div class="form-group row">
+
+            <label class="col-sm-2 col-form-label audax-label">Date Ridden:</label>
+            <input type=date name="eventDate" id="eventDate" class="form-control col-sm-2" placeholder="YYYY-MM-DD"
+                [(ngModel)]="eventDate" required>
+
+
+
+            <label class="col-sm-2 col-form-label audax-label">Event Name:</label>
+            <select class="form-control col-sm-4" name="eventId" id="eventId" [(ngModel)]="eventId" required>
+                <option [ngValue]="event._id" *ngFor="let event of events">{{event._id}} - {{event.name}}</option>
+            </select>
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label audax-label">Ride Rating:</label>
+            <div class="form-control col-sm-2">
+                <ngb-rating [(rate)]="rating" [max]="5"></ngb-rating>
+            </div>
+            <label class="col-sm-2 col-form-label audax-label">Cycle Type: </label>
+            <select class="form-control col-sm-2" name="cycleType" [(ngModel)]="cycleType" required>
+                <option [ngValue]="cType" *ngFor="let cType of cycleTypes">{{cType}}</option>
+            </select>
+        </div>
+
+        <div class="form-group row">
+        <label class="col-sm-2 col-form-label audax-label">Comments:</label>
+            <textarea name="comment" class="form-control col-sm-8" [(ngModel)]="comment"></textarea>
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label audax-label">Select track file:</label>
+            <input class="form-control col-sm-8" type="file" (change)="readFile($event.target.files)" accept=".fit, .tcx, .gpx, .zip" required>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-5"></div>
+            <input [disabled]="!uploadForm.valid" type="submit" class="btn btn-primary form-control col-sm-2" value="Upload"
+                required>
+        </div>
+
+
+    </form>
+   
+</div>

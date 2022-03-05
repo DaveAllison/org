@@ -1,0 +1,66 @@
+<div class="border-bottom border-danger">
+  <div class="container">
+    <nav class="navbar navbar-expand-sm navbar-light">
+      <div class="row">
+        <div class="mr-4">
+          <a routerLink="/home"><img class="audax-logo" src="../../../assets/images/org.png"></a>
+        </div>
+        
+        <div id="appNavigation" class="collapse navbar-collapse" [ngbCollapse]=false>
+          <div class="row">
+            <span class="audax-menu-col">
+              <div ngbDropdown class="d-inline-block">
+                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>Events</a>
+                <div ngbDropdownMenu>
+                  <a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
+                    routerLink="/events/event-list/C">Calendar Event List</a>
+                  <a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
+                    routerLink="/events/event-list/P">Permanent Event List</a>
+                  <a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
+                    routerLink="/events/event-admin">Event Admin</a>
+                </div>
+              </div>
+
+              <div ngbDropdown class="d-inline-block">
+                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>Riders</a>
+                <div ngbDropdownMenu>
+                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                    ngbDropdownItem routerLink="/riders/start-list">Start List</a>
+                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                    ngbDropdownItem routerLink="/riders/riders-aaa">AAA Riders List</a>
+                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                    ngbDropdownItem routerLink="/riders/riders-ece">ECE Riders List</a>
+                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                    ngbDropdownItem routerLink="/riders/riders-diy">DIY Riders List</a>
+                    <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                    ngbDropdownItem routerLink="/riders/validate">Validations</a>
+                </div>
+              </div>
+
+              <div ngbDropdown class="d-inline-block">
+                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>Organisers</a>
+                <div ngbDropdownMenu>
+                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/organisers/org-admin">Organisers</a>
+                </div>
+              </div>
+
+              <div ngbDropdown class="d-inline-block">
+                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>My Account</a>
+                <div ngbDropdownMenu>
+                  <a ngbDropdownItem [text]="globals.user ? 'Log out': 'Log in'" href (click)="login()"></a>
+                  <a *ngIf="globals.user"
+                    ngbDropdownItem routerLink="/organisers/org-profile">My Profile</a>
+                  <!--<a *ngIf="globals.user" ngbDropdownItem routerLink="/members/custom-events">My Custom Routes</a>
+                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/members/completed-events">My Completed Events</a>
+                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/members/track-upload">Upload a track</a>
+                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/members/download">Get the App</a>-->
+                </div>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </nav>
+  </div>
+</div>

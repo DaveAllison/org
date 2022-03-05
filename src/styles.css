@@ -1,0 +1,189 @@
+@import 'bootstrap.min.css';
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+html, body { height: 100%; width:100%; font-family: Ubuntu; color: #555555; font-size:14px }
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.audaxBackground{
+  background-repeat: no-repeat; 
+  background-size:cover; 
+  background-position: center; 
+  background-attachment: fixed;
+}
+
+.audax-section-panel{
+  border-top: 1px solid #17a2b8;
+  position: relative;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.audax-section-panel h2 {
+  font-size: 18px;
+  font-weight: bold;
+  display: inline-block;
+  position: relative;
+  color: #0c5fa2;
+  background-color: #ffffff;
+  padding: 0 10px 0 10px;
+  margin: -18px 0 0 5px;
+}
+
+.wrapper {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.audax-navbar {
+  width:100%;
+}
+
+.audax-menu-col {
+  text-align:left;
+}
+
+/* can't import certain bootstrap properties, so have replicated them here*/
+.audax-dropdown {
+  display:block;
+  padding-top:.25rem;
+  padding-left:1.5rem;
+  width:100%;
+  cursor:pointer;
+}
+
+.audax-dropdown:hover{
+  background-color: #f8f9fa;;
+}
+
+.eb-spinner-modal {
+  position: absolute; 
+  top:0; 
+  height:100%; 
+  width:100%; 
+  z-index:1000; 
+}
+
+.eb-spinner-centre{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.eb-spinner-large{
+  width: 3rem; 
+  height: 3rem
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+
+.mainPage {
+  margin:auto;
+  margin-top:10px;
+  min-height:60%;
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 100px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.banner {
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position:bottom;
+  height:500px;
+  
+}
+
+.bannerText {
+  text-align: center;
+  position:relative;
+  top:250px;
+}
+
+.bannerText p{
+  font-size:40px;
+  font-style:italic;
+  color:white;
+}
+
+.picblock {
+  color: black;
+}
+
+.audax-label {
+  text-align:right;
+}
+
+.audax-table-input {
+  width:75px;
+}
+
+.audax-table-input-large {
+  width:125px;
+}
+
+.blueBlock {
+  background-color: blue;
+  color: white;
+}
+
+.mobile {
+  display:none;
+}
+
+input.ng-invalid {
+	border:1px solid red;
+}
+
+@media (max-width: 768px){
+
+  .audax-logo{
+    width:150px;
+    margin-bottom:10px;
+  }
+
+  .audax-label{
+    text-align:left;
+  }
+
+ .audax-mobile-menu {
+   display:block; float:right;
+ }
+
+  .audax-menu-col {
+    min-width: 300px;
+  }
+
+  .mobile {
+    display:inline-block;
+  }
+
+  .not-mobile{
+    display:none;
+  }
+}

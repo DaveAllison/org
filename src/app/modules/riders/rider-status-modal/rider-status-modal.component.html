@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h4 class="modal-title" *ngIf="rider">{{rider.name}} {{rider.memberId}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+
+    <div class="container">
+        <div class="form" *ngIf="rider">
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Status:</label>
+                <select class="form-control col-md-6" [(ngModel)]="rider.status">
+                    <option [ngValue]="entryStatus" *ngFor="let entryStatus of refDataService.entryStatuses()">{{entryStatus}}</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Cycle Type:</label>
+                <select class="form-control col-md-6" [(ngModel)]="rider.cycleType">
+                    <option [ngValue]="cycleType" *ngFor="let cycleType of refDataService.cycleTypes()">{{cycleType}}</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Time (Day/Hour/Min):</label>
+                <input class="form-control col-md-2" type="number" step="1" min="0" max="10" [(ngModel)]="rideTime[0]" placeholder="days">
+                <input class="form-control col-md-2" type="number" step="1" min="0" max="23" [(ngModel)]="rideTime[1]" placeholder="hours">
+                <input class="form-control col-md-2" type="number" step="1" min="0" max="59" [(ngModel)]="rideTime[2]"placeholder="mins">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5"></label>
+                <button class="form-control col-md-2 btn btn-primary" (click)="save()">Save</button>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+

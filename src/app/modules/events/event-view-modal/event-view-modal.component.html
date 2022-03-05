@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <h4 class="modal-title" *ngIf="event.name">{{event.name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+<!--
+<div class="container">-->
+    <div *ngIf="event">
+        <h4>Description</h4>
+        <p>{{event.distance}} km cycling event starting from {{event.start.description}}. Controls at  {{controls}}</p>
+        <div style="width:100%" ng-bind-html="event.description | trusted"></div>
+        <hr>
+        <h4>Event Date and Location</h4>
+        <div class="row" *ngIf="event.eventDate">
+            <span class="col-sm-2">Date:</span><span class="col-sm-10 font-weight-bold">{{event.eventDate | date :  'y-MM-dd HH:mm'}}</span>
+        </div>
+        <div class="row">
+            <span class="col-sm-2">Distance:</span><span class="col-sm-10 font-weight-bold">{{event.distance}} km</span>
+        </div>
+        <div class="row">
+            <span class="col-sm-2">Starting from:</span><span class="col-sm-10 font-weight-bold">{{event.start.description}}</span>
+        </div>
+        <hr>
+        <h4>Event Information</h4>
+        <div class="row">
+            <span class="col-sm-2">Event No:</span><span class="col-sm-2 font-weight-bold">{{event._id}}</span>
+        </div>
+        <div class="row">
+            <span class="col-sm-2">Speed:</span><span class="col-sm-2 font-weight-bold">{{event.minSpeed}} - {{event.maxSpeed}} km/h</span>
+            <span class="col-sm-2">Climb:</span><span class="col-sm-2 font-weight-bold">{{event.climb}} m</span>
+            <span class="col-sm-2">AAA points:</span><span class="col-sm-2 font-weight-bold">{{event.aaaPoints}}</span>
+        </div>
+        <div class="row">
+            <span class="col-sm-2">Category:</span><span class="col-sm-2 font-weight-bold">{{event.category}}</span>
+            <span class="col-sm-2">Body:</span><span class="col-sm-2 font-weight-bold">{{event.body}}</span>
+            <span class="col-sm-2">AUK Points:</span><span class="col-sm-2 font-weight-bold">{{event.aukPoints}}</span>
+        </div>
+    </div>
+    <hr>
+    <h4>Control Map</h4>
+    <p>You may need to zoom out to see all controls</p>
+    <div id="mapId" style="height:400px"></div>
+    <hr>
+</div>
+

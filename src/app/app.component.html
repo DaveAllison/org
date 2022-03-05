@@ -1,0 +1,18 @@
+<div class="wrapper">
+  <div class="bg-light">
+      <app-menu></app-menu>
+  </div>
+  <div class="audaxBackground" [ngStyle]="{'background-image': globals.bgImage}">
+      <!--<div *ngIf="globals.bgImage != 'none'" style="display:block; float:right">
+        <a href="#" (click)="togglePicture()"><small>Show/hide the picture</small></a>
+      </div>-->
+    <div id="main">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <div>
+    <app-footer></app-footer>
+  </div>
+</div>
+<app-alerts aria-live="polite" aria-atomic="true"></app-alerts>
+<app-spinner></app-spinner>

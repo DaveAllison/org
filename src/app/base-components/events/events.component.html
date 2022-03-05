@@ -1,0 +1,83 @@
+<div class="container">
+    <br>
+    <div class="audax-header pt-2 pb-2 rounded">
+        <h2>Audax {{isPerm ? "Permanent" : "Calendar"}} Event Listing</h2>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-2" *ngIf="!isPerm">
+            <label>From: </label>
+            <input type="date" class="form-control" [(ngModel)]="startDate">
+        </div>
+        <div class="col-sm-1" *ngIf="!isPerm">
+            <label>Days: </label>
+            <input type="text" class="form-control" [(ngModel)]="duration">
+        </div>
+        <div class="col-sm-1">
+            <label>Min Km: </label>
+            <select class="form-control" [(ngModel)]="minDistance">
+                <option>0</option>
+                <option>50</option>
+                <option>100</option>
+                <option>200</option>
+                <option>300</option>
+                <option>400</option>
+                <option>600</option>
+                <option>1000</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            <label>Max Km: </label>
+            <select class="form-control" [(ngModel)]="maxDistance">
+                <option>50</option>
+                <option>100</option>
+                <option>200</option>
+                <option>300</option>
+                <option>400</option>
+                <option>600</option>
+                <option>1000</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <label>Event or organiser Name: </label>
+            <input type="text" class="form-control" [(ngModel)]="name">
+        </div>
+        <div class="col-md-2">
+            <label>E-Brevet Approved: </label>
+            <select class="form-control col-md-12" [(ngModel)]="isEbApproved">
+                <option [ngValue]=true>EB Approved</option>
+                <option [ngValue]=false>All Rides</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <label><br></label>
+            <button class="btn btn-primary form-control" (click)="getEvents()">Search</button>
+        </div>
+    </div>
+
+<br>
+<div class="row font-weight-bold not-mobile" ng-if="events">  
+    <div class="col-sm-1" *ngIf="!isPerm">Date</div>
+    <div class="col-sm-1">Event Id</div>
+    <div class="col-sm-1">Distance</div>
+    <div class="col-sm-3">Start</div>
+    <div class="col-sm-4">Ride Name</div>
+    <div class="col-sm-2">Organiser </div>
+</div>
+<hr ng-if="events">
+<div *ngFor="let event of events">
+    <div class="row" [class.cancelled]="event.status > 2">  
+        <div class="col-sm-1" *ngIf="!isPerm"><span class="mobile font-weight-bold">Date:</span> {{event.eventDate | date :  'y-MM-dd'}}</div>
+        <div class="col-sm-1"><span class="mobile font-weight-bold">Event Id:</span><a href="javascript:void(0)" (click)="showEvent(event)"> {{event._id}}</a></div>
+        <div class="col-sm-1"><span class="mobile font-weight-bold">Distance:</span> {{event.distance}}<span class="mobile">km:</span></div>
+        <div class="col-sm-3"><span class="mobile font-weight-bold">Start:</span> {{event.start.description}}</div>
+        <div class="col-sm-4"><span class="mobile font-weight-bold">Ride Name:</span> {{event.name}}</div>
+        <div class="col-sm-2"><span class="mobile font-weight-bold">Organiser:</span> {{event.organiser}}</div>
+    </div>
+    <hr>
+</div>
+</div>
+
+
+
+

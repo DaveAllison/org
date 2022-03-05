@@ -1,0 +1,1 @@
+export * from './auklogin.component';

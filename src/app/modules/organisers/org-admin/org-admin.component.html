@@ -1,0 +1,42 @@
+<div class="container">
+    <h2>Organisers</h2>
+    <div class="form-group row">
+        <div class="col-md-1">
+            <label>Region: </label>
+        </div>
+        <div class="col-md-2">
+            <select class="form-control col-md-12" [(ngModel)]="params.region" (change)="getOrgs(false)">
+                <option *ngFor="let region of regions">{{region}}</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary form-control col-md-12" (click)="addNew()">Add new</button>
+        </div>
+    </div>
+    <div class="table-responsive-md table-sm">
+        <table class="table table-hover table-striped table-borderless">
+            <thead>
+                <tr>
+                    <th style="width:20%">Id</th>
+                    <th style="width:30%">E-mail</th>
+                    <th style="width:20%">Admin Group</th>
+                    <th style="width:30%">Region</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let org of organisers">
+                    <td><a href="javascript:void(0)" (click)="showOrg(org)">{{org._id}}</a></td>
+                    <td>{{org.email}}</td>
+                    <td>{{org.adminGroup}}</td>
+                    <td>{{org.region}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--<div class="row mb-2" *ngIf="organisers.length > 0">
+        <div class="col-md-5"></div>
+        <div class="col-md2">
+            <button class="btn btn-primary form-control" (click)="getOrgs(true)">More</button>
+        </div>
+    </div>-->
+</div>

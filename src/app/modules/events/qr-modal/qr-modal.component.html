@@ -1,0 +1,11 @@
+<div class="container">
+    <br>
+    <div class="text-center">
+        <img src="../../../../assets/images/audax-logo.png">
+        <hr>
+        <h1>Audax UK Control: {{control.name}}</h1>
+        <qrcode [qrdata]="getQrString()" [width]="512" [errorCorrectionLevel]="'M'"></qrcode>
+        <p>Scan the code with your E-Brevet App to record proof of passage</p>
+    </div>
+    <br>
+</div>
