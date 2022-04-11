@@ -280,7 +280,9 @@ export class EventAdminComponent implements OnInit {
           distance: 0,
           infoQuestion: null
         }
-      ]
+      ],
+      registrationFeePaid: false,
+      registrationOrderId: null
     }
     this.setMarkers(true);
   }

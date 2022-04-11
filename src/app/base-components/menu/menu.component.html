@@ -10,7 +10,7 @@
           <div class="row">
             <span class="audax-menu-col">
               <div ngbDropdown class="d-inline-block">
-                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>Events</a>
+                <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>Events</a>
                 <div ngbDropdownMenu>
                   <a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
                     routerLink="/events/event-list/C">Calendar Event List</a>
@@ -22,7 +22,7 @@
               </div>
 
               <div ngbDropdown class="d-inline-block">
-                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>Riders</a>
+                <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>Riders</a>
                 <div ngbDropdownMenu>
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
                     ngbDropdownItem routerLink="/riders/start-list">Start List</a>
@@ -32,20 +32,22 @@
                     ngbDropdownItem routerLink="/riders/riders-ece">ECE Riders List</a>
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
                     ngbDropdownItem routerLink="/riders/riders-diy">DIY Riders List</a>
-                    <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                  <a *ngIf="globals.user && globals.user.adminGroup"
+                    ngbDropdownItem routerLink="/riders/incident-list">Incident Reporting</a>
+                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
                     ngbDropdownItem routerLink="/riders/validate">Validations</a>
                 </div>
               </div>
 
-              <div ngbDropdown class="d-inline-block">
-                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>Organisers</a>
+              <div *ngIf="globals.user && globals.user.groups.includes('event-admin')" ngbDropdown class="d-inline-block">
+                <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>Organisers</a>
                 <div ngbDropdownMenu>
                   <a *ngIf="globals.user" ngbDropdownItem routerLink="/organisers/org-admin">Organisers</a>
                 </div>
               </div>
 
               <div ngbDropdown class="d-inline-block">
-                <a class="nav-link text-dark" href="#" onclick="return false;" ngbDropdownToggle>My Account</a>
+                <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>My Account</a>
                 <div ngbDropdownMenu>
                   <a ngbDropdownItem [text]="globals.user ? 'Log out': 'Log in'" href (click)="login()"></a>
                   <a *ngIf="globals.user"

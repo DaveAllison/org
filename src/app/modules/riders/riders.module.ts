@@ -10,6 +10,8 @@ import { RidersRoutingModule } from './riders-routing.module';
 import { RiderStatusModalComponent } from './rider-status-modal/rider-status-modal.component';
 import { RiderAddModalComponent } from './rider-add-modal/rider-add-modal.component';
 import { ValidateComponent } from './validate/validate.component';
+import { IncidentListComponent } from './incident-list/incident-list.component';
+import { IncidentModalComponent } from './incident-modal/incident-modal.component';
 
 
 
@@ -21,7 +23,9 @@ import { ValidateComponent } from './validate/validate.component';
     RidersAaaComponent,
     RidersDiyComponent,
     RidersEceComponent,
-    ValidateComponent
+    ValidateComponent,
+    IncidentListComponent,
+    IncidentModalComponent
   ],
   imports: [
     CommonModule,

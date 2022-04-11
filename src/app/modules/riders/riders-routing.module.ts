@@ -7,6 +7,7 @@ import { RidersAaaComponent } from '../riders/riders-aaa/riders-aaa.component';
 import { RidersDiyComponent } from '../riders/riders-diy/riders-diy.component';
 import { RidersEceComponent } from '../riders/riders-ece/riders-ece.component';
 import { ValidateComponent } from './validate/validate.component';
+import { IncidentListComponent } from './incident-list/incident-list.component';
 
 
 const routes: Routes = [  
@@ -14,7 +15,8 @@ const routes: Routes = [
     { path: 'riders-aaa', component: RidersAaaComponent, canActivate: [FinisherGuard] },
     { path: 'riders-diy', component: RidersDiyComponent, canActivate: [FinisherGuard] },
     { path: 'riders-ece', component: RidersEceComponent, canActivate: [FinisherGuard] },
-    { path: 'validate', component: ValidateComponent, canActivate: [FinisherGuard] }
+    { path: 'validate', component: ValidateComponent, canActivate: [FinisherGuard] },
+    { path: 'incident-list', component: IncidentListComponent, canActivate: [FinisherGuard] }
    
 ];
 

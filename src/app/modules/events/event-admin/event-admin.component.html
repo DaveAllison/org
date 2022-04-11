@@ -225,7 +225,7 @@
                 <input class="btn btn-primary form-control" (click)="requestApproval()" value="Request Approval">
             </div>
             <div class="col-md-2">
-                <input class="btn btn-primary form-control" (click)="payRegistration()" value="Pay Registration">
+                <input class="btn btn-primary form-control" (click)="payRegistration()" [disabled]="event.registrationFeePaid" value="Pay Registration">
             </div>
         </div> 
     </div>

@@ -32,7 +32,7 @@ export class ValidateComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      this.myEvents = await this.rest.get('/eventData/eventList', { eventType: "C" }, { 'Authorization': localStorage.getItem("token") });
+      this.myEvents = await this.rest.get('/eventData/eventList', { eventType: "C", screen: "validation" }, { 'Authorization': localStorage.getItem("token") });
       this.myEvents.splice(0, 0, {_id:0, name:"All"});
     }
     catch (error) {

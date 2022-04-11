@@ -1,0 +1,38 @@
+<div class="container">
+    <h2>Incident Reporting</h2>
+     <div class="form-group row">
+        <label class="col-md-2 col-form-label audax-label">Select an Event: </label>
+        <select class="form-select col-md-3" [(ngModel)]="selectedEventId" (change)="getIncidents()">
+            <option [ngValue]="myEvent._id" *ngFor="let myEvent of myEvents">{{myEvent._id}} - {{myEvent.name}}</option>
+        </select>
+        <label class="col-md-5 col-form-label audax-label"> </label>
+        <button *ngIf="selectedEventId" class="btn btn-primary form-control col-md-2"
+            (click)="addIncident()">Add Incident</button>
+    </div>
+    <div class="row audax-section-panel">
+        <h2>Incident List</h2>
+    </div>
+
+    <div>    
+        
+        <div class="table-responsive-md table-sm">
+            <table *ngIf="incidents" class="table table-striped table-borderless">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Summary</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let incident of incidents; let i = index">
+                        <td><a href="javascript:void(0)" (click)="showIncident(incident)">{{incident.incidentDate | date :  'y-MM-dd'}}</a></td>
+                        <td>{{incident.summary}}</td>
+                        <td>{{incident.severity}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

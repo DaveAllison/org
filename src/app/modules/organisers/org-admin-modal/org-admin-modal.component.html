@@ -1,6 +1,6 @@
 <div class="modal-header">
 
-    <h2 class="modal-title">Member Details</h2>
+    <h2 class="modal-title">Organiser Details</h2>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -96,6 +96,14 @@
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-primary form-control col-md-12" (click)="upload($event)" [disabled]="editDisabled">Upload</button> 
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Roles:</label>
+                <div class="col-md-2">
+                    <select class="form-control col-md-12" name="roles" [(ngModel)]="organiser.role" [disabled]="!isAdmin" multiple>
+                        <option [value]="role" *ngFor="let role of refData.roles()">{{role}}</option>
+                    </select>
                 </div>
             </div>
             <hr>

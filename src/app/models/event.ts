@@ -40,5 +40,7 @@ export interface Event {
         distance: number,
         infoQuestion: string
       }
-    ]
+    ],
+    registrationFeePaid: boolean,
+    registrationOrderId: number
   }

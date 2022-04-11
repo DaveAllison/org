@@ -7,8 +7,16 @@ export class RefDataService {
 
   constructor() { }
 
+  roles(): string[] {
+    return ["event-admin", "event-organiser", "validator"];
+  }
+
   entryStatuses(): string[] {
     return ['Entered', 'Finished', 'Did not start', 'Did not finish'];
+  }
+
+  incidentStatuses(): string[] {
+    return ['Minor', 'Major'];
   }
 
   cycleTypes(): string[] {

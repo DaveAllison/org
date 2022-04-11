@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RestService } from "../../../services/rest.service";
+import { RefDataService } from "../../../services/refData.service";
 import { Globals } from '../../../globals';
 import { AlertsService } from '../../../services/alerts.service';
 import { environment } from '../../../../environments/environment';
@@ -23,16 +24,20 @@ export class OrgAdminModalComponent {
     isAdmin = false;
     uploadFile: File = null;
     uploadBuffer: any = null
+    possibleGroups: string[];
+    selectedGroups: string[];
+    myGroups: string[];
     
     API_URL: string = environment.API_URL;
     STORAGE_URL = environment.STORAGE_URL;
 
-    constructor(public activeModal: NgbActiveModal, private rest: RestService, public globals: Globals, private alertsService: AlertsService) { }
+    constructor(public activeModal: NgbActiveModal, public refData: RefDataService, private rest: RestService, public globals: Globals, private alertsService: AlertsService) { }
 
     async ngOnInit() {
         if(!this.organiser._id) this.isNew = true;
         this.editDisabled = this.organiser._id === this.globals.user._id || this.globals.user.groups.includes("event-admin") ? false : true;
         if(this.globals.user.groups.includes("event-admin")) this.isAdmin = true;
+        console.log(this.organiser.role);
     }
     
     async editOrg() {
