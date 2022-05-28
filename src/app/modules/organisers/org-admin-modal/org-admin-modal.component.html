@@ -12,30 +12,44 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Membership No:</label>
                 <div class="col-md-2">
-                    <input class="form-control col-md-12" type="text" name="_id" [(ngModel)]="organiser._id" [disabled]="!isNew" required>
+                    <input class="form-control col-md-12" type="text" name="_id" [(ngModel)]="organiser._id" [disabled]="!isNew" required (change)="getDetails()">
                 </div>
-                
             </div>
-            
             <div class="form-group row">
-                <label class="col-md-2 col-form-label audax-label">E-Mail:</label>
+                <label class="col-md-2 col-form-label audax-label">Name:</label>
                 <div class="col-md-6">
-                    <input class="form-control col-md-12" class="form-control col-md-12" type="text" name="email" [(ngModel)]="organiser.email" pattern="^\w+@[a-zA-Z_]+?.[a-zA-Z.]{2,20}$" [disabled]="editDisabled">
+                    <input class="form-control col-md-12" type="text" name="_id" value="{{organiser.firstname}} {{organiser.lastname}}" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Org. E-Mail:</label>
+                <div class="col-md-6">
+                    <input class="form-control col-md-12" class="form-control col-md-12" type="text" name="email" pattern="^[\w.]+@[a-zA-Z_]+?.[a-zA-Z.]{2,20}$" [(ngModel)]="organiser.email" [disabled]="editDisabled">
                 </div>
                 
             </div>
             <div class="form-group row">
-                <label class="col-md-2 col-form-label audax-label">AdminGroup:</label>
+                <label class="col-md-2 col-form-label audax-label">Admin Group:</label>
                 <div class="col-md-2">
                     <input class="form-control col-md-12" type="text" name="adminGroup" [(ngModel)]="organiser.adminGroup" required [disabled]="editDisabled">
                 </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Region:</label>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <select class="form-control col-md-12" name="region" [(ngModel)]="organiser.region" required [disabled]="editDisabled">
                         <option *ngFor="let region of regions">{{region}}</option>
                     </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Level:</label>
+                <div class="col-md-2">
+                    <select class="form-control col-md-12" name="levels" [(ngModel)]="organiser.level" [disabled]="!isAdmin">
+                        <option [value]="level" *ngFor="let level of refData.eventOrgLevels()">{{level}}</option>
+                    </select>
+                </div>
+                <label class="col-md-2 col-form-label audax-label">Provisional:</label>
+                <div class="col-md-1">
+                    <input class="form-control col-md-12" type="checkbox" name="provisional" [(ngModel)]="organiser.provisional" [disabled]="editDisabled">
                 </div>
             </div>
             <div class="form-group row">
@@ -45,8 +59,6 @@
                         <option *ngFor="let x of onlinePaymentTypes">{{x}}</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Postal Payment:</label>
                 <div class="col-md-2">
                     <select class="form-control col-md-12" name="postalPayment" [(ngModel)]="organiser.postalPaymentAllowed" required [disabled]="editDisabled">
@@ -58,13 +70,13 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Stripe Account:</label>
                 <div class="col-md-6">
-                    <input class="form-control col-md-12" type="text" name="stripeAccount" [(ngModel)]="organiser.stripeAccount" [disabled]="editDisabled">
+                    <input class="form-control col-md-12" type="text" name="stripeAccount" [(ngModel)]="organiser.stripeAccount" [disabled]="editDisabled" [required]="organiser.onlinePaymentType==='Stripe'">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Paypal Email:</label>
                 <div class="col-md-6">
-                    <input class="form-control col-md-12" type="text" name="paypalEmail" [(ngModel)]="organiser.paypalEmail" [disabled]="editDisabled">
+                    <input class="form-control col-md-12" type="text" name="paypalEmail" [(ngModel)]="organiser.paypalEmail" pattern="^[\w.]+@[a-zA-Z_]+?.[a-zA-Z.]{2,20}$" [disabled]="editDisabled" [required]="organiser.onlinePaymentType==='Paypal'">
                 </div>
             </div>
             <div class="form-group row">

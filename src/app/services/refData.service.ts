@@ -8,7 +8,7 @@ export class RefDataService {
   constructor() { }
 
   roles(): string[] {
-    return ["event-admin", "event-organiser", "validator"];
+    return ["event-admin", "event-organiser", "mentor", "validator"];
   }
 
   entryStatuses(): string[] {
@@ -25,6 +25,10 @@ export class RefDataService {
 
   eventOrgStatuses(): string[] {
     return ['Void', 'Draft', 'Submitted'];
+  }
+
+  eventOrgLevels(): number[] {
+    return [1, 2, 3];
   }
 
   eventAdminStatuses(): string[] {

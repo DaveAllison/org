@@ -14,7 +14,9 @@ import { OrgAdminModalComponent } from '../org-admin-modal/org-admin-modal.compo
 })
 export class OrgAdminComponent implements OnInit {
 
+  allOrganisers: any = [];
   organisers: any = [];
+  orgFilter: string = '';
   regions: any = [ "South-East", "South-West", "North-West", "North-East", "Scotland"];
   params = {
     region: "South-East",
@@ -36,10 +38,10 @@ export class OrgAdminComponent implements OnInit {
       if(!more) this.params.restartId = "0"
       let response = <any[]>(await this.rest.get('/orgData/list', this.params, {'Authorization': localStorage.getItem("token")}));
       if(more && Object.keys(response).length === 0) throw ({error:{message : "No more organisers found"}}); // NB don't know that we have returned an array so can't test length
-      this.organisers = more ? this.organisers.concat(response) : response;
-      if(this.organisers.length === 0) throw ({error:{message : "No organisers found"}});
-      this.params.restartId = this.organisers[this.organisers.length - 1]._id.toString();
-      console.log(this.organisers[0])
+      this.allOrganisers = more ? this.organisers.concat(response) : response;
+      if(this.allOrganisers.length === 0) throw ({error:{message : "No organisers found"}});
+      this.params.restartId = this.allOrganisers[this.allOrganisers.length - 1]._id.toString();
+      this.filterOrgs();
     }
     catch(e){
       if (e.error && e.error.message) this.alertsService.show(e.error.message, { classname: 'bg-danger text-light', delay: 3000 });
@@ -51,6 +53,12 @@ export class OrgAdminComponent implements OnInit {
   showOrg(organiser): void {
     const modalRef = this.modalService.open(OrgAdminModalComponent, { size: 'xl' });
     modalRef.componentInstance.organiser = organiser;
+  }
+
+  filterOrgs(): void {
+    
+    if(!this.orgFilter) this.organisers = this.allOrganisers;
+    else this.organisers = this.allOrganisers.filter(o => (o.firstname && o.firstname.match(this.orgFilter, "i")) || o.lastname && o.lastname.match(this.orgFilter, "i") || o.email.match(this.orgFilter, "i"));
   }
 
   addNew(): void{

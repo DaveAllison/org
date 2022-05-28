@@ -27,6 +27,7 @@ export class OrgAdminModalComponent {
     possibleGroups: string[];
     selectedGroups: string[];
     myGroups: string[];
+    members: any[];
     
     API_URL: string = environment.API_URL;
     STORAGE_URL = environment.STORAGE_URL;
@@ -60,6 +61,36 @@ export class OrgAdminModalComponent {
         this.uploadBuffer = reader.result;
       }
       reader.readAsArrayBuffer(this.uploadFile);
+    }
+
+    async getDetails() {
+      try {
+        let response = <any[]>(await this.rest.get('/orgData/memberDetails', {id:this.organiser._id}, { headers: { 'Authorization': localStorage.getItem("token") } }));
+        console.log(response);
+        if(response.length === 0) {
+          this.organiser = {};
+          throw({error:{message:"No member found"}})
+        }
+        else {
+          let member = response[0];
+          if(member.orgId) throw({error:{message:"This member is already an organiser!"}})
+          this.organiser.email = member.email;
+          this.organiser.firstname = member.firstname;
+          this.organiser.lastname = member.lastname;
+          this.organiser.onlinePaymentType = 'Paypal';
+          this.organiser.postalPaymentAllowed = true;
+          this.organiser.enabled = true;
+          this.organiser.level = 1;
+          this.organiser.provisional = true;
+        }
+          
+        
+    }
+      catch (e) {
+          if (e.error && e.error.message) this.alertsService.show(e.error.message, { classname: 'bg-danger text-light', delay: 3000 });
+          else this.alertsService.show("An error occurred", { classname: 'bg-danger text-light', delay: 3000 });
+          console.log(e);
+      }
     }
 
     async upload(event) {
