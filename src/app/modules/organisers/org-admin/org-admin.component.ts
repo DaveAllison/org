@@ -24,12 +24,15 @@ export class OrgAdminComponent implements OnInit {
   };
 
 
-  constructor(private router: Router, private rest: RestService, private modalService: NgbModal, private titleService: Title, private globals: Globals, private alertsService: AlertsService) { }
+  constructor(private router: Router, private rest: RestService, private modalService: NgbModal, private titleService: Title, private globals: Globals, private alertsService: AlertsService) { 
+    
+      this.globals.bgImage = "none";
+      this.globals['bgText'] = null;
+    
+  }
 
   ngOnInit(): void {
     this.titleService.setTitle('Organisers - Organiser Admin');
-    this.globals['bgImage'] = "none";
-    this.globals['bgText'] = null;
     this.getOrgs(false);
   }
 
@@ -39,8 +42,8 @@ export class OrgAdminComponent implements OnInit {
       let response = <any[]>(await this.rest.get('/orgData/list', this.params, {'Authorization': localStorage.getItem("token")}));
       if(more && Object.keys(response).length === 0) throw ({error:{message : "No more organisers found"}}); // NB don't know that we have returned an array so can't test length
       this.allOrganisers = more ? this.organisers.concat(response) : response;
-      if(this.allOrganisers.length === 0) throw ({error:{message : "No organisers found"}});
-      this.params.restartId = this.allOrganisers[this.allOrganisers.length - 1]._id.toString();
+      if(this.allOrganisers.length === 0) this.alertsService.show("No organisers found", { classname: 'bg-warning text-light', delay: 3000 });
+      this.params.restartId = this.allOrganisers.length > 0 ? this.allOrganisers[this.allOrganisers.length - 1]._id.toString() : "0";
       this.filterOrgs();
     }
     catch(e){
@@ -58,7 +61,10 @@ export class OrgAdminComponent implements OnInit {
   filterOrgs(): void {
     
     if(!this.orgFilter) this.organisers = this.allOrganisers;
-    else this.organisers = this.allOrganisers.filter(o => (o.firstname && o.firstname.match(this.orgFilter, "i")) || o.lastname && o.lastname.match(this.orgFilter, "i") || o.email.match(this.orgFilter, "i"));
+    else {
+      let r = new RegExp(this.orgFilter, "i");
+      this.organisers = this.allOrganisers.filter(o => (o.firstname && o.firstname.match(r)) || o.lastname && o.lastname.match(r) || o.email.match(r));
+    }
   }
 
   addNew(): void{

@@ -8,7 +8,7 @@ export class RefDataService {
   constructor() { }
 
   roles(): string[] {
-    return ["event-admin", "event-organiser", "mentor", "validator"];
+    return ["cal-admin", "perm-admin", "event-organiser", "mentor", "validator"];
   }
 
   entryStatuses(): string[] {
@@ -19,12 +19,16 @@ export class RefDataService {
     return ['Minor', 'Major'];
   }
 
+  controlTypes(): string[] {
+    return ['Control', 'Checkpoint', 'Info', 'Secret'];
+  }
+
   cycleTypes(): string[] {
     return ['Solo', 'Tandem', 'Tricycle', 'Recumbent'];
   }
 
   eventOrgStatuses(): string[] {
-    return ['Void', 'Draft', 'Submitted'];
+    return [, 'Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'];
   }
 
   eventOrgLevels(): number[] {
@@ -32,7 +36,7 @@ export class RefDataService {
   }
 
   eventAdminStatuses(): string[] {
-    return ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed'];
+    return ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'];
   } 
 
   eventDistances(): number[] {
@@ -42,12 +46,19 @@ export class RefDataService {
   eventStatusMap(): any {
     return {
       a: {
-        "event-organiser":['Void', 'Draft', 'Submitted'],
-        "event-admin": ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed']
+        "event-organiser":['Project', 'Planned'],
+        "cal-admin": ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'],
+        "perm-admin": ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed']
       },
       b: {
-        "event-organiser":['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed'],
-        "event-admin": ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed']
+        "event-organiser":['Project', 'Planned', 'Published'],
+        "cal-admin": ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'],
+        "perm-admin": ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed']
+      },
+      c: {
+        "event-organiser":[],
+        "cal-admin": ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'],
+        "perm-admin": ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed']
       }
     };
   }

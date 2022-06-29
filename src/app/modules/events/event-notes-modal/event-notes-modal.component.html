@@ -1,0 +1,54 @@
+<div class="modal-header">
+    <h2 class="modal-title">Event Notes</h2>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    
+    <div class="table-responsive-md table-sm">
+        <table class="table table-hover table-striped table-borderless">
+            <thead>
+                <tr>
+                    <th style="width:15%">Date</th>
+                    <th style="width:15%">Updated By</th>
+                    <th style="width:80%">Note</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="notes">
+                <tr *ngFor="let note of notes">
+                    <td>{{formatDate(note.createdDate)}}</td>
+                    <td>{{note.createdBy}}</td>
+                    <td>{{note.note}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h4>Add Note</h4>
+    <form #orgForm="ngForm" (ngSubmit)="addNote()">
+        <fieldset>
+            <div class="form-group row">
+                
+                <div class="col-md-12">
+                    <textarea class="form-control col-md-12" name="note" [(ngModel)]="note"></textarea>
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <input class="btn btn-primary form-control" type="submit" value="Save">
+                </div>
+            </div>
+        </fieldset>
+        
+    </form>
+
+    
+    
+    <!--<div class="row mb-2" *ngIf="organisers.length > 0">
+        <div class="col-md-5"></div>
+        <div class="col-md2">
+            <button class="btn btn-primary form-control" (click)="getOrgs(true)">More</button>
+        </div>
+    </div>-->
+</div>

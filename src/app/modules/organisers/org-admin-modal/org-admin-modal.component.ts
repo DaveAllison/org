@@ -28,6 +28,7 @@ export class OrgAdminModalComponent {
     selectedGroups: string[];
     myGroups: string[];
     members: any[];
+    mentorName: string = null;
     
     API_URL: string = environment.API_URL;
     STORAGE_URL = environment.STORAGE_URL;
@@ -36,9 +37,10 @@ export class OrgAdminModalComponent {
 
     async ngOnInit() {
         if(!this.organiser._id) this.isNew = true;
-        this.editDisabled = this.organiser._id === this.globals.user._id || this.globals.user.groups.includes("event-admin") ? false : true;
-        if(this.globals.user.groups.includes("event-admin")) this.isAdmin = true;
-        console.log(this.organiser.role);
+        if (this.globals.user.groups.some( x => ['cal-admin', 'perm-admin'].includes(x))) this.isAdmin = true;
+        this.editDisabled = this.organiser._id === this.globals.user._id || this.isAdmin ? false : true;
+        this.mentorName = `${this.organiser.mentorFirstname ? this.organiser.mentorFirstname : ""} ${this.organiser.mentorLastname ? this.organiser.mentorLastname : ""}`
+        
     }
     
     async editOrg() {
@@ -66,7 +68,6 @@ export class OrgAdminModalComponent {
     async getDetails() {
       try {
         let response = <any[]>(await this.rest.get('/orgData/memberDetails', {id:this.organiser._id}, { headers: { 'Authorization': localStorage.getItem("token") } }));
-        console.log(response);
         if(response.length === 0) {
           this.organiser = {};
           throw({error:{message:"No member found"}})
@@ -91,6 +92,27 @@ export class OrgAdminModalComponent {
           else this.alertsService.show("An error occurred", { classname: 'bg-danger text-light', delay: 3000 });
           console.log(e);
       }
+    }
+
+    async addMentor() {
+      try {
+        let response = <any[]>(await this.rest.get('/orgData/memberDetails', {id:this.organiser.mentor}, { headers: { 'Authorization': localStorage.getItem("token") } }));
+      
+
+        if(response.length === 0) {
+          throw({error:{message:"No member found"}})
+        }
+        else {
+          let mentor = response[0];
+          this.mentorName = `${mentor.firstname ? mentor.firstname : ""} ${mentor.lastname ? mentor.lastname : ""}`
+        }
+      }
+      catch (e) {
+          if (e.error && e.error.message) this.alertsService.show(e.error.message, { classname: 'bg-danger text-light', delay: 3000 });
+          else this.alertsService.show("An error occurred", { classname: 'bg-danger text-light', delay: 3000 });
+          console.log(e);
+      }
+      
     }
 
     async upload(event) {

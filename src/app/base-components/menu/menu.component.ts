@@ -15,13 +15,16 @@ export class MenuComponent implements OnInit {
   menuClass: string ="collapse navbar-collapse";
   isCollapsed: boolean = true;
   uploadURL: string = "https://storage.googleapis.com/moex-cms-upload/";
+  isAdmin: boolean = false;
 
   constructor(private router: Router, public globals: Globals, public alertsService: AlertsService) { }
 
   ngOnInit(): void {
     var token = localStorage.getItem("token");
     if(token !== null && !helper.isTokenExpired(token)) this.globals.user = helper.decodeToken(token).user;
-    //else this.globals.user._id = null;
+    else this.globals.user._id = null;
+    if(this.globals.user && this.globals.user.groups.some( x => ['cal-admin', 'perm-admin'].includes(x))) this.globals.user.isAdmin = true;
+    
     console.log(this.globals);
   }
 

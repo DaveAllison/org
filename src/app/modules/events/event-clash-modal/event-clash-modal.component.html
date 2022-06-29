@@ -1,0 +1,52 @@
+<div class="modal-header">
+    <h4 class="modal-title" *ngIf="event.name">{{event.name}} - Clash Check</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+<!--
+<div class="container">-->
+<div *ngIf="allEvents">
+        
+    <div class="row">
+        <div class="col-sm-2">
+            <label>Days +/-: </label>
+            <input type="number" class="form-control" [(ngModel)]="daysRange" (change)="filterEvents()">
+        </div>
+        <div class="col-sm-1">
+            <label>Min Km: </label>
+            <select class="form-control" [(ngModel)]="minDistance" (change)="filterEvents()">
+                <option>0</option>
+                <option>50</option>
+                <option>100</option>
+                <option>200</option>
+                <option>300</option>
+                <option>400</option>
+                <option>600</option>
+                <option>1000</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            <label>Max Km: </label>
+            <select class="form-control" [(ngModel)]="maxDistance" (change)="filterEvents()">
+                <option>50</option>
+                <option>100</option>
+                <option>200</option>
+                <option>300</option>
+                <option>400</option>
+                <option>600</option>
+                <option>1000</option>
+            </select>
+        </div>
+    </div>
+    <hr>
+    <h4>Event Map</h4>
+    <p>You may need to zoom out to see all events</p>
+</div>
+<div id="clashMap" style="height:600px"></div>
+    <hr>
+   
+</div>
+
+

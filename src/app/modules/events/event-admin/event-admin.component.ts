@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router"
+import {Router, ActivatedRoute} from "@angular/router"
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Title } from '@angular/platform-browser';
 import { RefDataService } from '../../../services/refData.service';
@@ -9,7 +9,8 @@ import { environment } from '../../../../environments/environment';
 import { AlertsService } from '../../../services/alerts.service';
 import * as L from 'leaflet';
 import { Event } from '../../../models/event';
-import { QrModalComponent } from '../qr-modal/qr-modal.component';
+import { EventNotesModalComponent } from '../event-notes-modal/event-notes-modal.component';
+import { EventClashModalComponent } from '../event-clash-modal/event-clash-modal.component';
 
 const permittedFileTypes = {
   track: [ 'fit', 'gpx', 'tcx', 'zip' ],
@@ -21,7 +22,7 @@ const maxFileSize = 2;
   selector: 'app-event-admin',
   templateUrl: './event-admin.component.html'
 })
-export class EventAdminComponent implements OnInit {
+export class EventAdminComponent implements OnInit{
 
   event: Event;
   newEventId: string=null;
@@ -32,14 +33,19 @@ export class EventAdminComponent implements OnInit {
   //eventDistances: any = [50, 100, 150, 200, 300, 400, 500, 600, 1000, 1100, 1200, 1300, 1400, 1500, 2000, 3000, 4000];
   paymentMethods: any = ['Post', 'Online', 'Both'];
   eventStatuses: any = [];
+  controlTypes: any = [];
   //orgStatuses: any = ['Void', 'Draft', 'Submitted'];
   //adminStatuses: any = ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed'];
   eventDate: string;
+  entryOpenDate: string;
+  entryCloseDate: string;
   eventTime: string;
   selectedControl: number = 0;
   editDisabled = true; 
   uploadFile: Object = { track:null, notes: null };
   uploadBuffer: Object = { track: null, notes: null};
+  selectedTab: string = "";
+  notes: any = [];
 
   /*
   statusMap: any = {
@@ -64,25 +70,29 @@ export class EventAdminComponent implements OnInit {
 
   // approval
   isDirector: boolean = false;
+  isAdmin: boolean = false;
 
-  constructor(public globals: Globals, private router: Router, public alertsService: AlertsService, public refDataService: RefDataService, private rest: RestService, private titleService: Title, private modalService: NgbModal) {
+  constructor(public globals: Globals, private router: Router, private activatedRoute: ActivatedRoute, public alertsService: AlertsService, public refDataService: RefDataService, private rest: RestService, private titleService: Title, private modalService: NgbModal) {
     this.titleService.setTitle('Organisers - Event Admin');
     this.globals['bgImage'] = "none";
     this.globals['bgText'] = null;
+    activatedRoute.params.subscribe(params => { this.getEvent(params); });
   }
 
   async ngOnInit() {
     if (this.globals.user.groups.includes("event-director")) this.isDirector = true;
+    if (this.globals.user.groups.some( x => ['cal-admin', 'perm-admin'].includes(x))) this.isAdmin = true;
     try {
 
-      if(this.globals.user.groups.includes('event-admin')) this.eventStatuses = this.refDataService.eventAdminStatuses();
+      if(this.isAdmin) this.eventStatuses = this.refDataService.eventAdminStatuses();
       else this.eventStatuses = this.refDataService.eventOrgStatuses();
+      this.controlTypes = this.refDataService.controlTypes();
 
-      this.myEvents = await this.rest.get('/eventData/eventList', null, { 'Authorization': localStorage.getItem("token") });
-      if(this.myEvents.length === 1) { // Safari browser does not allow selection if only one event in list
-        this.selectedEventId = this.myEvents[0]._id;
-        this.getEvent();
-      }
+      // this.myEvents = await this.rest.get('/eventData/eventList', null, { 'Authorization': localStorage.getItem("token") });
+      // if(this.myEvents.length === 1) { // Safari browser does not allow selection if only one event in list
+      //   this.selectedEventId = this.myEvents[0]._id;
+      //   this.getEvent();
+      // }
     }
     catch (e) {
       console.log(e);
@@ -92,11 +102,12 @@ export class EventAdminComponent implements OnInit {
   }
 
 
-  async getEvent() {
+  async getEvent(params) {
 
     try {
 
-      let response = await this.rest.get('/eventData', { _id: this.selectedEventId }, { 'Authorization': localStorage.getItem("token") });
+      let response = await this.rest.get('/eventData', { _id: params.id }, { 'Authorization': localStorage.getItem("token") });
+      this.notes = await this.rest.get('/eventData/notes', { eventId: params.id }, { 'Authorization': localStorage.getItem("token") });
       this.event = <Event>response;
       this.selectedControl = 0;
 
@@ -106,6 +117,16 @@ export class EventAdminComponent implements OnInit {
         let dateTimeString = new Date(this.event.eventDate).toLocaleString("en-GB", { timeZone: 'Europe/London' });
         this.eventDate = `${dateTimeString.substring(6,10)}-${dateTimeString.substring(3,5)}-${dateTimeString.substring(0,2)}`;
         this.eventTime = dateTimeString.substring(12,17)
+      }
+
+      if (this.event.entryOpenDate) {
+        let dateTimeString = new Date(this.event.entryOpenDate).toLocaleString("en-GB", { timeZone: 'Europe/London' });
+        this.entryOpenDate = `${dateTimeString.substring(6,10)}-${dateTimeString.substring(3,5)}-${dateTimeString.substring(0,2)}`;
+      }
+
+      if (this.event.entryCloseDate) {
+        let dateTimeString = new Date(this.event.entryCloseDate).toLocaleString("en-GB", { timeZone: 'Europe/London' });
+        this.entryCloseDate = `${dateTimeString.substring(6,10)}-${dateTimeString.substring(3,5)}-${dateTimeString.substring(0,2)}`;
       }
 
       // Create a controls string
@@ -119,6 +140,7 @@ export class EventAdminComponent implements OnInit {
       if (this.event.start.latitude && this.event.start.longitude) {
 
         this.setMarkers(true);
+        this.selectedTab = "summary";
       }
 
     }
@@ -127,6 +149,16 @@ export class EventAdminComponent implements OnInit {
       this.alertsService.show(e.error.message, { classname: 'bg-danger text-light', delay: 3000 });
       return;
     }
+  }
+
+  getSelectedTab(tab: string){
+    if(this.selectedTab === "") return "";
+    if(tab === this.selectedTab) return "";
+    return ("d-none");
+  }
+  
+  setSelectedTab(tab: string){
+    this.selectedTab = tab;
   }
 
   async onSubmit() {
@@ -138,7 +170,7 @@ export class EventAdminComponent implements OnInit {
       let response = await this.rest.post('/eventData', this.event, { 'Authorization': localStorage.getItem("token") });
 
       if (!this.event._id) {
-        this.alertsService.show(`Event record added. Event ID is ${response['_id']}. The Event Director must approve this event before it can be ridden`);
+        this.alertsService.show(`Event record added. Event ID is ${response['_id']}.`);
         this.event._id = response['_id'];
         this.myEvents.push({ _id: this.event._id, name: this.event.name });
       }
@@ -155,7 +187,7 @@ export class EventAdminComponent implements OnInit {
   checkEvent(): void{
 
     // check fields. NB this is not submitted as a form, because ngFor doesn't work correctly in forms?? (so no form validation...)
-    for (let field of ['distance', 'minSpeed', 'maxSpeed']) {
+    for (let field of ['distance', 'minSpeed', 'maxSpeed', 'maxRiders']) {
       if (isNaN(this.event[field]) || this.event[field] <= 0) throw ("Field: \"" + field + "\" must be numeric and greater than zero");
     }
 
@@ -163,9 +195,17 @@ export class EventAdminComponent implements OnInit {
     if(!this.event.category) throw("Category is required");
 
     // send date in correct format (i.e as ISO string, otherwise get into a mess with BST). Make null for permanent events
-    if (this.event.eventType !== "C") this.event.eventDate = null;
-    else this.event.eventDate = new Date(this.eventDate + "T" + this.eventTime);
-    if (this.event.eventDate && isNaN(this.event.eventDate.getTime())) throw ("Event date / time is not valid");
+    if (this.event.eventType !== "C") {
+      this.event.eventDate = null;
+      this.event.entryOpenDate = null;
+      this.event.entryCloseDate = null;
+    }
+    else {
+      this.event.eventDate = new Date(this.eventDate + "T" + this.eventTime);
+      this.event.entryOpenDate = new Date(this.entryOpenDate);
+      this.event.entryCloseDate = new Date(this.entryCloseDate);
+      if (this.event.eventDate && isNaN(this.event.eventDate.getTime())) throw ("Event date / time is not valid");
+    }
 
     // don't allow max speed <= min speed - will make it impossible to arrive!
     if (this.event.maxSpeed <= this.event.minSpeed) throw ("Max speed must be greater tham min speed");
@@ -205,7 +245,8 @@ export class EventAdminComponent implements OnInit {
     let origId = this.event._id;
     try {
       this.event._id = 0;
-      this.event.eventStatus = 'Draft';
+      this.event.eventStatus = 'Project';
+      this.event.eventRequestedStatus = 'Project';
       this.checkEvent();
       let result = await this.rest.post('/eventData', this.event, { 'Authorization': localStorage.getItem("token") });
       this.event._id = result['_id'];
@@ -248,6 +289,9 @@ export class EventAdminComponent implements OnInit {
       description: null,
       distance: 0,
       eventDate: null,
+      entryOpenDate: null,
+      entryCloseDate: null,
+      maxRiders: 0,
       eventType: "P",
       postalFee: 0,
       onlineFee: 0,
@@ -255,20 +299,25 @@ export class EventAdminComponent implements OnInit {
       maxSpeed: 0,
       minSpeed: 0,
       name: null,
-      organiser: null,
+      primaryOrganiserId: this.globals.user._id,
       adminGroup: this.globals.user.adminGroup,
       reversible: false,
       altStart: false,
       flexStart: false,
-      eventStatus: 'Draft',
+      eventStatus: 'Project',
+      eventRequestedStatus: 'Project',
       start: {
         description: null,
         latitude: 51.47432,
         longitude: 0.00001
       },
+      facilityCamping: false,
       facilityToilets: false,
       facilityGPS: false,
+      facilityLuggage: false,
       facilityMudguards: false,
+      facilityParking: false,
+      facilityRefreshmentsStart: false,
       facilityXRate: false,
       trackFileURL: null,
       routeFileURL: null,
@@ -278,7 +327,9 @@ export class EventAdminComponent implements OnInit {
           latitude: 51.47432,
           longitude: 0.00001,
           distance: 0,
-          infoQuestion: null
+          proximity: 0.5,
+          infoQuestion: null,
+          infoAnswer: null
         }
       ],
       registrationFeePaid: false,
@@ -286,7 +337,6 @@ export class EventAdminComponent implements OnInit {
     }
     this.setMarkers(true);
   }
-
 
   // populate map details - but only if the event has a start location
   setMap(): void {
@@ -311,16 +361,25 @@ export class EventAdminComponent implements OnInit {
 
     this.map.doubleClickZoom.disable();   // add a custom start
 
-    this.map.on('dblclick', (e) => {
-      this.event.controls.push({
-        name: "New control",
-        latitude: +e.latlng.lat.toFixed(5),
-        longitude: +e.latlng.lng.toFixed(5),
-        distance: 0,
-        infoQuestion: null
+    if(!this.checkDisabled('a')){
+      this.map.on('dblclick', (e) => {
+        this.event.controls.push({
+          name: "New control",
+          latitude: +e.latlng.lat.toFixed(5),
+          longitude: +e.latlng.lng.toFixed(5),
+          distance: 0,
+          proximity: 0.5,
+          infoQuestion: null,
+          infoAnswer: null
+        });
+        this.setMarkers(false); // refresh map to show new marker
       });
-      this.setMarkers(false); // refresh map to show new marker
-    });
+    }
+    
+    
+    
+    
+    
 
     this.map.addLayer(osm);
 
@@ -337,10 +396,10 @@ export class EventAdminComponent implements OnInit {
 
     for (let i = 0; i < this.event.controls.length; i++) {
       let control = this.event.controls[i]
-      let marker = L.marker([control.latitude, control.longitude], { icon: this.icon, title: control.name, draggable: 'true', id: i });
+      let marker = L.marker([control.latitude, control.longitude], { icon: this.icon, title: control.name, draggable: !this.checkDisabled('a'), id: i });
       marker.bindPopup("<p>" + control.name + "</p><p>Lat: " + control.latitude + ", Long: " + control.longitude + "</p>").openPopup();
 
-
+      
       marker.on('dragend', (e) => {
         var marker = e.target;
         var position = marker.getLatLng();
@@ -348,6 +407,7 @@ export class EventAdminComponent implements OnInit {
         this.event.controls[i].longitude = +position.lng.toFixed(5);
         marker.bindPopup("<p>" + control.name + "</p><p>Lat: " + control.latitude + ", Long: " + control.longitude + "</p>");
       });
+      
 
       this.markerGroup.addLayer(marker);
     }
@@ -399,8 +459,9 @@ export class EventAdminComponent implements OnInit {
 
     try {   
 
+      let suffix = this.uploadFile[source].name.split("\.").pop().toLowerCase();
       if(!this.uploadFile[source]) throw {error: {message: "Please select a file"}};
-      if(permittedFileTypes[source].indexOf(this.uploadFile[source].name.split("\.").pop().toLowerCase()) == -1) throw {error: {message: "Invalid file type - must be .fit, .gpx, .tcx or .zip"}};
+      if(permittedFileTypes[source].indexOf(suffix) == -1) throw {error: {message: "Invalid file type - must be .fit, .gpx, .tcx or .zip"}};
       if(this.uploadFile[source].size > (maxFileSize * 1048576)) throw {error: {message: `File too large - must be less than ${maxFileSize} MB`}};
       
       let params = {
@@ -414,8 +475,8 @@ export class EventAdminComponent implements OnInit {
       console.log(this.uploadFile[source].type);
       await fetch(response.url, { method: 'PUT', body: this.uploadBuffer[source], headers: {'content-type': this.uploadFile[source].type}})
       this.alertsService.show("File uploaded.", { classname: 'bg-success text-light', delay: 3000 });
-      if(source === "notes") this.event.routeFileURL = `notes/${this.event._id}.${this.uploadFile[source].type}`;
-      else this.event.trackFileURL = `track/${this.event._id}.${this.uploadFile[source].type}`;
+      if(source === "notes") this.event.routeFileURL = `notes/${this.event._id}.${suffix}`;
+      else this.event.trackFileURL = `track/${this.event._id}.${suffix}`;
       // https://www.geeksforgeeks.org/how-to-reset-selected-file-with-input-tag-file-type-in-angular-9/
       // https://blog.angular-university.io/angular-file-upload/
     }
@@ -426,7 +487,8 @@ export class EventAdminComponent implements OnInit {
     }
   }
 
-  checkEdit(name): boolean{
+  checkDisabled(name): boolean{
+    if(!this.isAdmin && this.globals.user.adminGroup !== this.event.adminGroup) return true;
     let statusMap = this.refDataService.eventStatusMap();
     for (let group of this.globals.user.groups){
       if(statusMap[name][group] && statusMap[name][group].includes(this.event.eventStatus)) return false;
@@ -434,9 +496,56 @@ export class EventAdminComponent implements OnInit {
     return true;
   }
 
+  showNotes() {
+    const modalRef = this.modalService.open(EventNotesModalComponent, { size: 'xl' });
+    modalRef.componentInstance.notes = this.notes;
+    modalRef.componentInstance.eventId = this.event._id;
+    modalRef.componentInstance.adminGroup = this.event.adminGroup;
+  }
+
   async payRegistration() {
     let res = await this.rest.post('/payment/create', {memberId:this.globals.user._id, eventId: this.event._id}, {});
     this.router.navigate(['payments/payment', res['client_secret']]);
+  }
+
+  async printBrevetCard(){
+    let cardDetails = {
+      org: this.event.primaryOrganiserId,
+      name: this.event.name,
+      body: this.event.body,
+      distance: this.event.distance,
+      eventDate: new Date(this.event.eventDate).valueOf(),
+      minSpeed: this.event.minSpeed,
+      maxSpeed: this.event.maxSpeed,
+      controls: this.event.controls
+    }
+
+    try {
+      let org:any = await this.rest.get('/orgData/memberDetails', {id: this.event.primaryOrganiserId}, {Authorization: localStorage.getItem("token")})
+      cardDetails['phone'] = org.length > 0 ? org[0]['phone'] : "";
+      console.log(cardDetails);
+      let data:any = await this.rest.post('/brevetcard', cardDetails, {accept:'application/pdf'});
+      var url = "data:application/pdf;base64," + data.data;
+
+      fetch(url)
+        .then(res => res.blob())
+        .then(res => {
+          let blobURL = URL.createObjectURL(res);
+          window.open(blobURL);
+        });
+    }
+    catch (error) {
+      console.log(error);
+      this.alertsService.show(error.message, { classname: 'bg-danger text-light', delay: 3000 });
+    }
+  }
+
+  async checkClashes() {
+    let allEvents = <any[]>(await this.rest.get('/eventData/clashList', {eventDate:this.eventDate}, {Authorization: localStorage.getItem("token")}));
+    const modalRef = this.modalService.open(EventClashModalComponent, { size: 'xl' });
+    modalRef.componentInstance.event = this.event;
+    modalRef.componentInstance.allEvents = allEvents;
+    modalRef.componentInstance.eventDate = this.eventDate; // NB this is a string
   }
 }
 

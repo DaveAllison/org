@@ -11,6 +11,7 @@ import { EventListComponent } from './event-list/event-list.component';
 const routes: Routes = [  
     { path: 'event-list/:type', component: EventListComponent, canActivate: [EditorGuard] },
     { path: 'event-admin', component: EventAdminComponent, canActivate: [EditorGuard] },
+    { path: 'event-admin/:id', component: EventAdminComponent, canActivate: [EditorGuard] },
 ];
 
 @NgModule({

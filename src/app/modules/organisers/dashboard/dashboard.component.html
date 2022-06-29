@@ -1,0 +1,92 @@
+<div class="container">
+    <h2 class="mb-3">My Dashboard</h2>
+    <div class="row audax-section-panel">
+        <h2>Create an Event</h2>
+    </div>
+    <p>You can copy any of your existing events from the Event Admin screen, or create a template event here, and edit it to suit your requirements: <button class="btn btn-primary form-control col-md-2" (click)="addEvent()">Create Event</button></p>
+    
+        
+        
+    
+    <div class="row audax-section-panel">
+        <h2>Notes</h2>
+    </div>
+    <div class="form-group row">
+        <label *ngIf="isAdmin || isMentor" class="col-md-2 col-form-label audax-label">Only my events:</label>
+        <input *ngIf="isAdmin || isMentor" class="col-md-1" type="checkbox" name="myEventNotes" [(ngModel)]="myEventNotes" (change)="getNotes(false)">
+        <label class="col-md-2 col-form-label audax-label">Filter by event id:</label>
+        <input class="col-md-2" type="number" name="eventFilter" [(ngModel)]="noteFilter" placeholder="Event Id" (input)="filterNotes()">
+        <label class="col-md-1 col-form-label audax-label"></label>
+        <button class="btn btn-primary form-control col-md-1" (click)="getNotes(true)">More</button>
+    </div>
+    <div class="table-responsive-md table-sm">
+        <table class="table table-hover table-striped table-borderless">
+            <thead>
+                <tr>
+                    <th style="width:15%">Date</th>
+                    <th style="width:10%">Created By</th>
+                    <th style="width:10%">Event Id</th>
+                    <th style="width:10%">Admin Group</th>
+                    <th style="width:55%">Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let note of filteredNotes">
+                    <td>{{formatDateAndTime(note.createdDate)}}</td>
+                    <td>{{note.createdBy}}</td>
+                    <td>{{note.eventId}}</td>
+                    <td>{{note.adminGroup}}</td>
+                    <td>{{note.note}}</td>
+                </tr>
+            </tbody>
+        </table>
+       
+    </div>
+
+    <div class="row audax-section-panel">
+        <h2>Events</h2>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-2 col-form-label audax-label">Need review:</label>
+        <input class="col-md-1" type="checkbox" name="needReview" [(ngModel)]="needReview" (change)="filterEvents()">
+        <label *ngIf="isAdmin || isMentor" class="col-md-2 col-form-label audax-label">Only my events:</label>
+        <input *ngIf="isAdmin || isMentor" class="col-md-1" type="checkbox" name="myEvents" [(ngModel)]="myEvents" (change)="getEvents(false)">
+        <label class="col-md-2 col-form-label audax-label">Filter by name / group:</label>
+        <input class="col-md-2" type="text" name="myEvents" [(ngModel)]="nameFilter" placeholder="Match name or group" (input)="filterEvents()">
+    </div>
+    <div class="table-responsive-md table-sm">
+        <table class="table table-hover table-striped table-borderless">
+            <thead>
+                <tr>
+                    <th style="width:10%">Event Id</th>
+                    <th style="width:25%">Event Name</th>
+                    <th style="width:10%">Admin Group</th>
+                    <th style="width:15%">Status</th>
+                    <th style="width:15%">Requested Status</th>
+                    <th style="width:10%">Event Type</th>
+                    <th style="width:15%">Event Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let event of filteredEvents">
+                    <td><a routerLink="/events/event-admin/{{event._id}}">{{event._id}}</a></td>
+                    <td>{{event.name}}</td>
+                    <td>{{event.adminGroup}}</td>
+                    <td>{{event.eventStatus}}</td>
+                    <td>{{event.eventRequestedStatus}}</td>
+                    <td>{{event.eventType}}</td>
+                    <td>{{event.eventType === 'C' ? formatDateAndTime(event.eventDate) : "N/A" }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    
+    <!--<div class="row mb-2" *ngIf="organisers.length > 0">
+        <div class="col-md-5"></div>
+        <div class="col-md2">
+            <button class="btn btn-primary form-control" (click)="getOrgs(true)">More</button>
+        </div>
+    </div>-->
+</div>
+

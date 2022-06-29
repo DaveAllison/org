@@ -16,12 +16,12 @@
                     routerLink="/events/event-list/C">Calendar Event List</a>
                   <a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
                     routerLink="/events/event-list/P">Permanent Event List</a>
-                  <a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
-                    routerLink="/events/event-admin">Event Admin</a>
+                  <!--<a *ngIf="globals.user && globals.user.adminGroup" ngbDropdownItem
+                    routerLink="/events/event-admin">Event Admin</a>-->
                 </div>
               </div>
 
-              <div ngbDropdown class="d-inline-block">
+              <!--<div ngbDropdown class="d-inline-block">
                 <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>Riders</a>
                 <div ngbDropdownMenu>
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
@@ -37,9 +37,9 @@
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
                     ngbDropdownItem routerLink="/riders/validate">Validations</a>
                 </div>
-              </div>
+              </div>-->
 
-              <div *ngIf="globals.user && globals.user.groups.includes('event-admin')" ngbDropdown class="d-inline-block">
+              <div *ngIf="globals.user && globals.user.isAdmin" ngbDropdown class="d-inline-block">
                 <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>Organisers</a>
                 <div ngbDropdownMenu>
                   <a *ngIf="globals.user" ngbDropdownItem routerLink="/organisers/org-admin">Organisers</a>
@@ -52,9 +52,9 @@
                   <a ngbDropdownItem [text]="globals.user ? 'Log out': 'Log in'" href (click)="login()"></a>
                   <a *ngIf="globals.user"
                     ngbDropdownItem routerLink="/organisers/org-profile">My Profile</a>
-                  <!--<a *ngIf="globals.user" ngbDropdownItem routerLink="/members/custom-events">My Custom Routes</a>
-                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/members/completed-events">My Completed Events</a>
-                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/members/track-upload">Upload a track</a>
+                  <a *ngIf="globals.user" ngbDropdownItem routerLink="/organisers/dashboard">My Dashboard</a>
+                  <!--<a *ngIf="globals.user" ngbDropdownItem routerLink="/members/completed-events">My Completed Events</a>-->
+                  <!--<a *ngIf="globals.user" ngbDropdownItem routerLink="/members/track-upload">Upload a track</a>
                   <a *ngIf="globals.user" ngbDropdownItem routerLink="/members/download">Get the App</a>-->
                 </div>
               </div>

@@ -93,6 +93,14 @@
                         <option [ngValue]=false>No</option>
                     </select>
                 </div>
+                <label class="col-md-2 col-form-label audax-label">Mentor:</label>
+                <div class="col-md-2">
+                    <input class="form-control col-md-12" type="number" name="mentor" [(ngModel)]="organiser.mentor" [disabled]="!isAdmin" (change)="addMentor()">
+                </div>
+                <div class="col-md-2">
+                    <input class="form-control col-md-12" type="text" name="mentorName" [(ngModel)]="mentorName" disabled="disabled">
+                </div>
+                
             </div>
             <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Logo:</label>

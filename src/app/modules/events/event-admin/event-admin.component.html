@@ -1,188 +1,258 @@
 <div class="container">
-    <h2>Event Admin</h2>
-     <div class="form-group row">
+    <div class="mb-3">
+        <h2>Event Admin</h2>
+    </div>
+     <!--<div class="form-group row">
         <label class="col-md-2 col-form-label audax-label">Select an Event: </label>
         <select class="form-select col-md-3" [(ngModel)]="selectedEventId" (change)="getEvent()">
             <option [ngValue]="myEvent._id" *ngFor="let myEvent of myEvents">{{myEvent._id}} - {{myEvent.name}}</option>
         </select>
+        
         <label class="col-md-5 col-form-label audax-label"> </label>
         <button *ngIf="event" class="btn btn-primary form-control col-md-2"
             (click)="copyEvent()">Copy Event</button>
+    </div>-->
+
+    <div class="row audax-section-panel" *ngIf="event">
+        <h2>Sections</h2>
     </div>
+    <div class="row" *ngIf="event">
+        <div class="col-md-2"></div>
+        <div class="col-md-2"><button class="btn {{selectedTab === 'summary'? 'btn-danger' : 'btn-primary'}} form-control col-md-12" (click)="setSelectedTab('summary')">Home</button></div>
+        <div class="col-md-2"><button class="btn {{selectedTab === 'controls'? 'btn-danger' : 'btn-primary'}} form-control col-md-12" (click)="setSelectedTab('controls')">Controls</button></div>
+        <div class="col-md-2"><button class="btn {{selectedTab === 'risks'? 'btn-danger' : 'btn-primary'}} form-control col-md-12" (click)="setSelectedTab('risks')">Risk Assessment</button></div>
+        <div class="col-md-2"><button class="btn btn-primary form-control col-md-12" (click)="showNotes()">Notes</button></div>
+    </div>
+    
 
     <div class="form" *ngIf="event">
-        <div class="row audax-section-panel">
-            <h2>Summary</h2>
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Event No:</label>
-            <input class="form-control col-md-2" type="text" [(ngModel)]="event._id" name="_id" readonly>
-            <label class="col-md-2 col-form-label audax-label">Event Type:</label>
-            <select class="form-control col-md-2" type="date" [(ngModel)]="event.eventType" name="eventType" required [disabled]="checkEdit('a')">
-                <option value='C'>Calendar</option>
-                <option value='D'>DIY</option>
-                <option value='P'>Permanent</option>
-            </select>
-            <label class="col-md-2 col-form-label audax-label">Status:</label>
-            <select *ngIf="!checkEdit('a')" class="form-select col-md-2" [(ngModel)]="event.eventStatus">
-                <option *ngFor="let status of eventStatuses">{{status}}</option>
-            </select>
-            <input *ngIf="checkEdit('a')" class="form-control col-md-2" type="text" [(ngModel)]="event.eventStatus" name="eventStatus" disabled="disabled">
-        
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Category:</label>
-            <select class="form-select col-md-2" [(ngModel)]="event.category" (change)="setSpeed()" [disabled]="checkEdit('a')">
-                <option value='BP'>BP</option>
-                <option value='BR'>BR</option>
-                <option value='BRM'>BRM</option>
-                <option value='RM'>RM</option>
-            </select>
-            <label class="col-md-2 col-form-label audax-label">Event Name:</label>
-            <input class="form-control col-md-6" type="text" [(ngModel)]="event.name" name="name" required [disabled]="checkEdit('a')">
-        </div>
-        <div class="form-group row" *ngIf="event.eventType === 'C'">
-            <label class="col-md-2 col-form-label audax-label">Event Date:</label>
-            <input class="form-control col-md-2" type="date" [(ngModel)]="eventDate" name="eventDate" required [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">Event Time:</label>
-            <input class="form-control col-sm-2" type="text" [(ngModel)]="eventTime" name="eventTime"
-                placeholder="HH:MM" pattern="^[0-2][0-9]:[0-9][0-9]$" [disabled]="checkEdit('a')">
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Body:</label>
-            <input class="form-control col-md-2" type="text" [(ngModel)]="event.body" name="body" required [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">Organiser:</label>
-            <input class="form-control col-md-6" type="text" [(ngModel)]="event.organiser" name="organiser" required [disabled]="checkEdit('a')">
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Distance (km):</label>
-            <select class="form-select col-md-2" [(ngModel)]="event.distance" [disabled]="checkEdit('a')">
-                <option *ngFor="let distance of refDataService.eventDistances()" [ngValue]="distance">{{distance}}</option>
-            </select>
-            <label class="col-md-2 col-form-label audax-label">Min Speed:</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.minSpeed" type="number" step="0.1" name="minSpeed" [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">Max Speed:</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.maxSpeed" type="number" step="0.1" name="maxSpeed" [disabled]="checkEdit('a')">
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Climb (m):</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.climb" type="number" step="1" name="climb" [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">AUK Points:</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.aukPoints" type="number" step="1" name="aukPoints" [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">AAA Points:</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.aaaPoints" type="number" step="0.1" name="aaaPoints" [disabled]="checkEdit('a')">
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Postal Fee:</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.postalFee" type="number" step="1" name="postalFee" [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">Online Fee:</label>
-            <input class="form-control col-md-2" [(ngModel)]="event.onlineFee" type="number" step="1" name="onlineFee" [disabled]="checkEdit('a')">
-            <label class="col-md-2 col-form-label audax-label">Payment Type:</label>
-            <select class="form-select col-md-2" [(ngModel)]="event.paymentMethod" [disabled]="checkEdit('a')">
-                <option *ngFor="let method of paymentMethods">{{method}}</option>
-            </select>
-        </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label audax-label">Description:</label>
-            <textarea class="form-control col-md-10" rows=6 [(ngModel)]="event.description" name="description"></textarea>
-        </div>
-        <div *ngIf="event.eventType === 'P'">
-            <h4>Custom Brevet Permissions</h4>
-            <p>Alternate (can choose which control to start at) and Flexible (can start between controls) permissions
-                will
-                only apply if the route is circular (i.e. start and end locations are identical)</p>
+        <div [ngClass]="getSelectedTab('summary')">
+            <div class="row audax-section-panel">
+                <h2>Summary</h2>
+            </div>
             <div class="form-group row">
-                <label class="col-md-2 col-form-label audax-label">Reversible?</label>
-                <select class="form-select col-md-2" [(ngModel)]="event.reversible" [disabled]="checkEdit('a')">
-                    <option [ngValue]=true>Yes</option>
-                    <option [ngValue]=false>No</option>
-                </select>
-                <label class="col-md-2 col-form-label audax-label">Alternate start?</label>
-                <select class="form-select col-md-2" [(ngModel)]="event.altStart" [disabled]="checkEdit('a')">
-                    <option [ngValue]=true>Yes</option>
-                    <option [ngValue]=false>No</option>
-                </select>
-                <label class="col-md-2 col-form-label audax-label">Flex start?</label>
-                <select class="form-select col-md-2" [(ngModel)]="event.flexStart" [disabled]="checkEdit('a')">
-                    <option [ngValue]=true>Yes</option>
-                    <option [ngValue]=false>No</option>
+                <label class="col-md-2 col-form-label audax-label">Event No:</label>
+                <input class="form-control col-md-2" type="text" [(ngModel)]="event._id" name="_id" readonly>
+                <label class="col-md-2 col-form-label audax-label">Event Type:</label>
+                <select class="form-control col-md-2" type="date" [(ngModel)]="event.eventType" name="eventType" required [disabled]="checkDisabled('a')">
+                    <option value='C'>Calendar</option>
+                    <option value='D'>DIY</option>
+                    <option value='P'>Permanent</option>
                 </select>
             </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Status:</label>
+                <select *ngIf="!checkDisabled('c')" class="form-select col-md-2" [(ngModel)]="event.eventStatus">
+                    <option *ngFor="let status of eventStatuses">{{status}}</option>
+                </select>
+                <input *ngIf="checkDisabled('c')" class="form-control col-md-2" type="text" [(ngModel)]="event.eventStatus" name="eventStatus" disabled="disabled">
+                <label class="col-md-2 col-form-label audax-label">Requested Status:</label>
+                <select class="form-select col-md-2" [(ngModel)]="event.eventRequestedStatus">
+                    <option *ngFor="let status of eventStatuses">{{status}}</option>
+                </select>
+                <label class="col-md-2 col-form-label audax-label">Fee Paid:</label>
+                <input class="col-sm-2" type="checkbox" name="feePaid" [(ngModel)]="event.registrationFeePaid" disabled="disabled">
+                
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Category:</label>
+                <select class="form-select col-md-2" [(ngModel)]="event.category" (change)="setSpeed()" [disabled]="checkDisabled('a')">
+                    <option value='BP'>BP</option>
+                    <option value='BR'>BR</option>
+                    <option value='BRM'>BRM</option>
+                    <option value='RM'>RM</option>
+                </select>
+                <label class="col-md-2 col-form-label audax-label">Event Name:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="event.name" name="name" required [disabled]="checkDisabled('a')">
+            </div>
+            <div class="form-group row" *ngIf="event.eventType === 'C'">
+                <label class="col-md-2 col-form-label audax-label">Event Date:</label>
+                <input class="form-control col-md-2" type="date" [(ngModel)]="eventDate" name="eventDate" required [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Event Time:</label>
+                <input class="form-control col-sm-2" type="text" [(ngModel)]="eventTime" name="eventTime"
+                    placeholder="HH:MM" pattern="^[0-2][0-9]:[0-9][0-9]$" [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label"></label>
+                <input class="btn btn-primary form-control col-md-2" (click)="checkClashes()" value="Check Clashes">
+            </div>
+            <div class="form-group row" *ngIf="event.eventType === 'C'">
+                <label class="col-md-2 col-form-label audax-label">Entry Open Date:</label>
+                <input class="form-control col-md-2" type="date" [(ngModel)]="entryOpenDate" name="entryOpenDate" required [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Entry Close Date:</label>
+                <input class="form-control col-md-2" type="date" [(ngModel)]="entryCloseDate" name="entryCloseDate" required [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Max Riders:</label>
+                <input class="form-control col-md-2" type="number" [(ngModel)]="event.maxRiders" name="maxRiders" required [disabled]="checkDisabled('a')">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Body:</label>
+                <input class="form-control col-md-2" type="text" [(ngModel)]="event.body" name="body" required [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Admin Group:</label>
+                <input class="form-control col-md-2" type="text" [(ngModel)]="event.adminGroup" name="body" required disabled="disabled">
+                <label class="col-md-2 col-form-label audax-label">Organiser:</label>
+                <input class="form-control col-md-2" type="number" [(ngModel)]="event.primaryOrganiserId" name="organiser" required [disabled]="checkDisabled('a')">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Distance (km):</label>
+                <select class="form-select col-md-2" [(ngModel)]="event.distance" [disabled]="checkDisabled('a')">
+                    <option *ngFor="let distance of refDataService.eventDistances()" [ngValue]="distance">{{distance}}</option>
+                </select>
+                <label class="col-md-2 col-form-label audax-label">Min Speed:</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.minSpeed" type="number" step="0.1" name="minSpeed" [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Max Speed:</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.maxSpeed" type="number" step="0.1" name="maxSpeed" [disabled]="checkDisabled('a')">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Climb (m):</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.climb" type="number" step="1" name="climb" [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">AUK Points:</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.aukPoints" type="number" step="1" name="aukPoints" [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">AAA Points:</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.aaaPoints" type="number" step="0.25" name="aaaPoints" [disabled]="checkDisabled('a')">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Postal Fee:</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.postalFee" type="number" step="1" name="postalFee" [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Online Fee:</label>
+                <input class="form-control col-md-2" [(ngModel)]="event.onlineFee" type="number" step="1" name="onlineFee" [disabled]="checkDisabled('a')">
+                <label class="col-md-2 col-form-label audax-label">Payment Type:</label>
+                <select class="form-select col-md-2" [(ngModel)]="event.paymentMethod" [disabled]="checkDisabled('a')">
+                    <option *ngFor="let method of paymentMethods">{{method}}</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label audax-label">Description:</label>
+                <textarea class="form-control col-md-10" rows=6 [(ngModel)]="event.description" name="description"></textarea>
+            </div>
+            <div *ngIf="event.eventType === 'P'">
+                <h4>Custom Brevet Permissions</h4>
+                <p>Alternate (can choose which control to start at) and Flexible (can start between controls) permissions
+                    will
+                    only apply if the route is circular (i.e. start and end locations are identical)</p>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label audax-label">Reversible?</label>
+                    <select class="form-select col-md-2" [(ngModel)]="event.reversible" [disabled]="checkDisabled('a')">
+                        <option [ngValue]=true>Yes</option>
+                        <option [ngValue]=false>No</option>
+                    </select>
+                    <label class="col-md-2 col-form-label audax-label">Alternate start?</label>
+                    <select class="form-select col-md-2" [(ngModel)]="event.altStart" [disabled]="checkDisabled('a')">
+                        <option [ngValue]=true>Yes</option>
+                        <option [ngValue]=false>No</option>
+                    </select>
+                    <label class="col-md-2 col-form-label audax-label">Flex start?</label>
+                    <select class="form-select col-md-2" [(ngModel)]="event.flexStart" [disabled]="checkDisabled('a')">
+                        <option [ngValue]=true>Yes</option>
+                        <option [ngValue]=false>No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row audax-section-panel">
+                <h2>Facilties</h2>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label audax-label">Toilets at start:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityToilets" [(ngModel)]="event.facilityToilets" [disabled]="checkDisabled('a')">
+                <label class="col-sm-2 col-form-label audax-label">GPS route available:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityGPS" [(ngModel)]="event.facilityGPS" [disabled]="checkDisabled('a')">
+                <label class="col-sm-2 col-form-label audax-label">Mudguards required:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityMudguards" [(ngModel)]="event.facilityMudguards" [disabled]="checkDisabled('a')">
+                <label class="col-sm-2 col-form-label audax-label">X-Rated event:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityXRate" [(ngModel)]="event.facilityXRate" [disabled]="checkDisabled('a')">
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label audax-label">Camping at Start:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityCamping" [(ngModel)]="event.facilityCamping" [disabled]="checkDisabled('a')">
+                <label class="col-sm-2 col-form-label audax-label">Luggage Storage:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityLuggage" [(ngModel)]="event.facilityLuggage" [disabled]="checkDisabled('a')">
+                <label class="col-sm-2 col-form-label audax-label">Parking at Start:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityParking" [(ngModel)]="event.facilityParking" [disabled]="checkDisabled('a')">
+                <label class="col-sm-2 col-form-label audax-label">Refreshments at Start:</label>
+                <input class="col-sm-1" type="checkbox" name="facilityRefreshmentsStart" [(ngModel)]="event.facilityRefreshmentsStart" [disabled]="checkDisabled('a')">
+            </div>
         </div>
-        <div class="row audax-section-panel">
-            <h2>Facilties</h2>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label audax-label">Toilets at start:</label>
-            <input class="col-sm-1" type="checkbox" name="facilityToilets" [(ngModel)]="event.facilityToilets" [disabled]="checkEdit('a')">
-            <label class="col-sm-2 col-form-label audax-label">GPS route available:</label>
-            <input class="col-sm-1" type="checkbox" name="facilityGPS" [(ngModel)]="event.facilityGPS" [disabled]="checkEdit('a')">
-            <label class="col-sm-2 col-form-label audax-label">Mudguards required:</label>
-            <input class="col-sm-1" type="checkbox" name="facilityMudguards" [(ngModel)]="event.facilityMudguards" [disabled]="checkEdit('a')">
-            <label class="col-sm-2 col-form-label audax-label">X-Rated event:</label>
-            <input class="col-sm-1" type="checkbox" name="facilityXRate" [(ngModel)]="event.facilityXRate" [disabled]="checkEdit('a')">
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label audax-label">Facility 5:</label>
-            <input class="col-sm-1" type="checkbox" name="facility5" [disabled]="checkEdit('a')">
-            <label class="col-sm-2 col-form-label audax-label">Facility 6:</label>
-            <input class="col-sm-1" type="checkbox" name="facility6" [disabled]="checkEdit('a')">
-            <label class="col-sm-2 col-form-label audax-label">Facility 7:</label>
-            <input class="col-sm-1" type="checkbox" name="facility7" [disabled]="checkEdit('a')">
-            <label class="col-sm-2 col-form-label audax-label">Facility 8:</label>
-            <input class="col-sm-1" type="checkbox" name="facility8" [disabled]="checkEdit('a')">
-        </div>
-        <div class="row audax-section-panel">
-            <h2>Controls</h2>
-        </div>
-        <div class="row font-weight-bold not-mobile">
+        <div [ngClass]="getSelectedTab('controls')">
+            <div class="row audax-section-panel">
+                <h2>Controls</h2>
+            </div>
+                <div class="row font-weight-bold not-mobile">
 
-            <div class="col-md-3 col-form-label col-form-label-sm">Name</div>
-            <div class="col-md-1 col-form-label col-form-label-sm">Km from start</div>
-            <div class="col-md-2 col-form-label col-form-label-sm">Lat</div>
-            <div class="col-md-2 col-form-label col-form-label-sm">Long</div>
-            <div class="col-md-4 col-form-label col-form-label-sm">Info Question</div>
-        </div>
-        <div *ngFor="let control of event.controls; let i = index">
-            <div [ngClass]="selectedControl === i ? 'form-group row bg-primary' : 'form-group row'">
-                <div class="col-md-3"><label class="mobile font-weight-bold">Name:</label><input
-                        class="form-control form-control-sm col-md-12" type="text" [(ngModel)]="control.name"
-                        (focus)=selectControl(i) name="controlName" required [disabled]="checkEdit('a')"></div>
-                <div class="col-md-1"><label class="mobile font-weight-bold">Km from Start:</label><input
-                        class="form-control form-control-sm col-md-12" type="number" step="1"
-                        [(ngModel)]="control.distance" (focus)=selectControl(i) name="controlDistance" required [disabled]="checkEdit('a')"></div>
-                <div class="col-md-2"><label class="mobile font-weight-bold">Latitude:</label><input
-                        class="form-control form-control-sm col-md-12" type="number" step="0.00001" min="-180" max="180"
-                        [(ngModel)]="control.latitude" (focus)=selectControl(i) name="controlLatitude"
-                        (change)="setMarkers(false)" required [disabled]="checkEdit('a')"></div>
-                <div class="col-md-2"><label class="mobile font-weight-bold">Longitude:</label><input
-                        class="form-control form-control-sm col-md-12" type="number" step="0.00001" min="-180" max="180"
-                        [(ngModel)]="control.longitude" (focus)=selectControl(i) name="controlLongitude"
-                        (change)="setMarkers(false)" required [disabled]="checkEdit('a')"></div>
-                <div class="col-md-4"><label class="mobile font-weight-bold">QR Text:</label><input
-                        class="form-control form-control-sm col-md-12" type="text" [(ngModel)]="control.infoQuestion"
-                        (focus)=selectControl(i) name="controlDistance" [disabled]="checkEdit('a')"></div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-1">
-                <button class="btn btn-small btn-primary form-control" (click)="clearControl();" [disabled]="checkEdit('a')"><img style="width:18px"
-                        type="image" src="../../../assets/images/icons/delete.png" title="delete"></button>
-            </div>
-            <div class="col-md-1">
-                <button class="btn btn-small btn-primary form-control" (click)="moveControl(1);" [disabled]="checkEdit('a')"><img style="width:18px"
-                        type="image" src="../../../assets/images/icons/down.png" title="move down"></button>
-            </div>
-            <div class="col-md-1">
-                <button class="btn btn-small btn-primary form-control" (click)="moveControl(-1);" [disabled]="checkEdit('a')"><img
-                        style="width:18px" type="image" src="../../../assets/images/icons/up.png"
-                        title="move up"></button>
+                    <div class="col-md-4 col-form-label col-form-label-sm">Name</div>
+                    <div class="col-md-1 col-form-label col-form-label-sm">Km from start</div>
+                    <div class="col-md-2 col-form-label col-form-label-sm">Lat</div>
+                    <div class="col-md-2 col-form-label col-form-label-sm">Long</div>
+                    <div class="col-md-1 col-form-label col-form-label-sm">Proximity</div>
+                    <div class="col-md-2 col-form-label col-form-label-sm">Control Type</div>
+                </div>
+                <div *ngFor="let control of event.controls; let i = index">
+                    <div [ngClass]="selectedControl === i ? 'bg-info pt-1 pb-1 mb-1 rounded' : 'bg-light pt-1 pb-1 mb-1 rounded'">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="mobile font-weight-bold">Name:</label>
+                                <input class="form-control form-control-sm col-md-12" type="text" [(ngModel)]="control.name"
+                                    (focus)=selectControl(i) name="controlName" required [disabled]="checkDisabled('a')">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="mobile font-weight-bold">Km from Start:</label>
+                                <input class="form-control form-control-sm col-md-12" type="number" step="1"
+                                    [(ngModel)]="control.distance" (focus)=selectControl(i) name="controlDistance" required [disabled]="checkDisabled('a')">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="mobile font-weight-bold">Latitude:</label>
+                                <input class="form-control form-control-sm col-md-12" type="number" step="0.00001" min="-180" max="180"
+                                    [(ngModel)]="control.latitude" (focus)=selectControl(i) name="controlLatitude"
+                                    (change)="setMarkers(false)" required [disabled]="checkDisabled('a')">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="mobile font-weight-bold">Longitude:</label>
+                                <input class="form-control form-control-sm col-md-12" type="number" step="0.00001" min="-180" max="180"
+                                    [(ngModel)]="control.longitude" (focus)=selectControl(i) name="controlLongitude"
+                                    (change)="setMarkers(false)" required [disabled]="checkDisabled('a')">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="mobile font-weight-bold">Proximity:</label><input
+                                    class="form-control form-control-sm col-md-12" type="number" step="0.1" min="0"
+                                    [(ngModel)]="control.proximity" (focus)=selectControl(i) name="controlProximity"
+                                    required [disabled]="checkDisabled('a')">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="mobile font-weight-bold">Control Type:</label>
+                                <select class="form-control form-control-sm col-md-12" [(ngModel)]="control.controlType" (focus)=selectControl(i) name="controlType" [disabled]="checkDisabled('b')">
+                                    <option *ngFor="let controlType of controlTypes">{{controlType}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div *ngIf="control.controlType === 'Info'" class="row mt-1">
+                            <div class="col-md-6"><input class="form-control form-control-sm col-md-12" type="text" placeholder="Info Control Question" [(ngModel)]="control.infoQuestion"
+                                (focus)=selectControl(i) name="infoControlQuestion" [disabled]="checkDisabled('b')">
+                            </div>
+                            <div class="col-md-6"><input class="form-control form-control-sm col-md-12" type="text" placeholder="Info Control Answer" [(ngModel)]="control.infoAnswer" 
+                                (focus)=selectControl(i) name="infoControlAnswer" [disabled]="checkDisabled('b')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <button class="btn btn-small btn-primary form-control" (click)="clearControl();" [disabled]="checkDisabled('a')"><img style="width:18px"
+                                type="image" src="../../../assets/images/icons/delete.png" title="delete"></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-small btn-primary form-control" (click)="moveControl(1);" [disabled]="checkDisabled('a')"><img style="width:18px"
+                                type="image" src="../../../assets/images/icons/down.png" title="move down"></button>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-small btn-primary form-control" (click)="moveControl(-1);" [disabled]="checkDisabled('a')"><img
+                                style="width:18px" type="image" src="../../../assets/images/icons/up.png"
+                                title="move up"></button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-small btn-primary form-control" (click)="printBrevetCard()" [disabled]="checkDisabled('a')">Brevet Card</button>
+                    </div>
+
+                </div>
             </div>
 
         </div>
-
-    </div>
-    <div>
+    <div [ngClass]="getSelectedTab('controls')">
         <div *ngIf="event">
             <div class="row audax-section-panel">
                 <h2>Control Map</h2>
@@ -193,7 +263,16 @@
         <br>
     </div>
 
-    <div *ngIf="event">
+    <div [ngClass]="getSelectedTab('risks')">
+        <div *ngIf="event">
+            <div class="row audax-section-panel">
+                <h2>Risk Assesment</h2>
+            </div>
+            <p>There's nothing here yet</p>
+        </div>
+    </div>
+
+    <div *ngIf="event" [ngClass]="getSelectedTab('summary')">
         <div class="row audax-section-panel">
             <h2>File uploads</h2>
         </div>
@@ -202,15 +281,16 @@
             <button class="btn btn-primary form-control col-md-2" *ngIf="!event.trackFileURL" disabled="disabled">No Track file</button>
             <label class="col-md-3 col-form-label audax-label">Upload gpx route file:</label>
             <input class="form-control col-md-5 mr-1" type="file" (change)="readFile($event.target.files, 'track')" accept=".fit, .tcx, .gpx, .zip" required>
-            <button class="btn btn-primary form-control col-md-1" (click)="upload('track')" [disabled]="checkEdit('a')">Upload</button> 
+            <button class="btn btn-primary form-control col-md-1" (click)="upload('track')" [disabled]="checkDisabled('a')">Upload</button> 
         </div>
         <div class="form-group row">
             <a class="btn btn-primary form-control col-md-2" *ngIf="event.routeFileURL" href="{{STORAGE_URL}}/{{event.routeFileURL}}" target="_blank">View Route notes</a>
             <button class="btn btn-primary form-control col-md-2" *ngIf="!event.routeFileURL" disabled="disabled">No Route notes</button>
             <label class="col-md-3 col-form-label audax-label">Upload route notes file:</label>
             <input class="form-control col-md-5 mr-1" type="file" (change)="readFile($event.target.files, 'notes')" accept=".pdf, .docx, .xlsx, .zip" required>
-            <button class="btn btn-primary form-control col-md-1" (click)="upload('notes')" [disabled]="checkEdit('a')">Upload</button> 
+            <button class="btn btn-primary form-control col-md-1" (click)="upload('notes')" [disabled]="checkDisabled('a')">Upload</button> 
         </div>
+    </div>
     
     <div *ngIf="event">
         <div class="row audax-section-panel">
@@ -221,11 +301,14 @@
             <div class="col-md-2">
                 <input class="btn btn-primary form-control" (click)="onSubmit()" value="Save">
             </div>
-            <div class="col-md-2">
+            <!--<div class="col-md-2">
                 <input class="btn btn-primary form-control" (click)="requestApproval()" value="Request Approval">
-            </div>
+            </div>-->
             <div class="col-md-2">
                 <input class="btn btn-primary form-control" (click)="payRegistration()" [disabled]="event.registrationFeePaid" value="Pay Registration">
+            </div>
+            <div class="col-md-2">
+                <input class="btn btn-primary form-control" (click)="copyEvent()" value="Copy Event">
             </div>
         </div> 
     </div>

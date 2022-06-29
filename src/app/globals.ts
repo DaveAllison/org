@@ -7,12 +7,14 @@ export class Globals {
   iat: number;
   user: {  
     _id: number,
-    householdId: number,
     firstName: string,
     lastName: string,
     groups: string[],
-    adminGroup: string
+    adminGroup: string,
+    region: string,
+    isAdmin: boolean
   };
+
   spinner: boolean = false;
 
   bgImage: string = "none";

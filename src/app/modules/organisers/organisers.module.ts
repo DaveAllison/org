@@ -8,11 +8,12 @@ import { TrackUploadComponent } from './track-upload/track-upload.component';
 import { OrgAdminComponent } from './org-admin/org-admin.component';
 import { OrgAdminModalComponent } from './org-admin-modal/org-admin-modal.component';
 import { OrgProfileComponent } from './org-profile/org-profile.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 
 @NgModule({
-  declarations: [ DownloadComponent, TrackUploadComponent, OrgAdminComponent, OrgAdminModalComponent, OrgProfileComponent],
+  declarations: [ DownloadComponent, TrackUploadComponent, OrgAdminComponent, OrgAdminModalComponent, OrgProfileComponent, DashboardComponent],
   imports: [
     CommonModule,
     FormsModule,

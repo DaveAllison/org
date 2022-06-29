@@ -9,7 +9,7 @@
 <div class="container">-->
     <div *ngIf="event">
         <h4>Description</h4>
-        <p>{{event.distance}} km cycling event starting from {{event.start.description}}. Controls at  {{controls}}</p>
+        <p>{{event.distance}} km cycling event starting from {{event.controls[0].name}}. Controls at  {{controls}}</p>
         <div style="width:100%" ng-bind-html="event.description | trusted"></div>
         <hr>
         <h4>Event Date and Location</h4>
@@ -20,7 +20,7 @@
             <span class="col-sm-2">Distance:</span><span class="col-sm-10 font-weight-bold">{{event.distance}} km</span>
         </div>
         <div class="row">
-            <span class="col-sm-2">Starting from:</span><span class="col-sm-10 font-weight-bold">{{event.start.description}}</span>
+            <span class="col-sm-2">Starting from:</span><span class="col-sm-10 font-weight-bold">{{event.controls[0].name}}</span>
         </div>
         <hr>
         <h4>Event Information</h4>
