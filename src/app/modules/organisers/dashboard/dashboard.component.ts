@@ -184,7 +184,7 @@ export class DashboardComponent implements OnInit {
       let result = await this.rest.post('/eventData', this.event, { 'Authorization': localStorage.getItem("token") });
       this.event._id = result['_id'];
       this.alertsService.show(`Event record ${this.event._id} created. Select from your event list below to edit it`, { classname: 'bg-success text-light', delay: 3000 });
-      this.events.push({
+      this.allEvents.push({
         _id: this.event._id,
         name: this.event.name,
         adminGroup: this.event.adminGroup,
@@ -192,6 +192,8 @@ export class DashboardComponent implements OnInit {
         eventStatus: this.event.eventStatus,
         eventRequestedStatus: this.event.eventRequestedStatus
       });
+      this.needReview = false;
+      this.filterEvents();
     }
     catch (e) {
       if (e.error && e.error.message) this.alertsService.show(e.error.message, { classname: 'bg-danger text-light', delay: 3000 });

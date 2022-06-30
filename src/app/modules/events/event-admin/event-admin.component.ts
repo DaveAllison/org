@@ -505,6 +505,7 @@ export class EventAdminComponent implements OnInit{
 
   async payRegistration() {
     let res = await this.rest.post('/payment/create', {memberId:this.globals.user._id, eventId: this.event._id}, {});
+    console.log(res);
     this.router.navigate(['payments/payment', res['client_secret']]);
   }
 
