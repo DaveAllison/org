@@ -129,6 +129,8 @@ export class EventAdminComponent implements OnInit{
         this.entryCloseDate = `${dateTimeString.substring(6,10)}-${dateTimeString.substring(3,5)}-${dateTimeString.substring(0,2)}`;
       }
 
+
+
       // Create a controls string
       let controlsArray = [];
       for (let control of this.event['controls']) {
@@ -174,7 +176,7 @@ export class EventAdminComponent implements OnInit{
         this.event._id = response['_id'];
         this.myEvents.push({ _id: this.event._id, name: this.event.name });
       }
-      else this.alertsService.show("Event record updated. The Event Director must approve this event before it can be ridden", { classname: 'bg-success text-light', delay: 3000 });
+      else this.alertsService.show("Event record updated", { classname: 'bg-success text-light', delay: 3000 });
     }
     catch (e) {
       console.log(e);
@@ -204,7 +206,10 @@ export class EventAdminComponent implements OnInit{
       this.event.eventDate = new Date(this.eventDate + "T" + this.eventTime);
       this.event.entryOpenDate = new Date(this.entryOpenDate);
       this.event.entryCloseDate = new Date(this.entryCloseDate);
-      if (this.event.eventDate && isNaN(this.event.eventDate.getTime())) throw ("Event date / time is not valid");
+      if(this.event.eventDate && isNaN(this.event.eventDate.getTime())) throw ("Event date / time is not valid");
+      if(this.event.eventDate <  new Date() && this.event.eventType === 'C') throw ("Event date cannot be in the past");
+      if(this.event.entryOpenDate > this.event.eventDate) throw ("Entry open date is after event date");
+      if(this.event.entryCloseDate > this.event.eventDate) throw ("Entry close date is after event date");
     }
 
     // don't allow max speed <= min speed - will make it impossible to arrive!
@@ -232,13 +237,20 @@ export class EventAdminComponent implements OnInit{
     if(this.event.eventType !== 'D') this.event.start = { description: this.event.controls[0].name, latitude: this.event.controls[0].latitude, longitude: this.event.controls[0].longitude };
     else this.event.start = { description: "Not defined", latitude: 51.47432, longitude: 0.0001 };
     
-    // set start speed for BRM events
+    // set start speed for BRM events.
     if(this.event.category === "BRM"){
       this.setSpeed();
       this.alertsService.show("This is a BRM event - setting minimum speed", { classname: 'bg-warning text-light', delay: 3000 });
     }
 
-  
+    // If distance < 200, must be BP
+    if(this.event.category !== "BP" && this.event.distance < 200) throw ("Distance is under 200km, so this must be a BP category");
+
+    // check max/min speeds are sensible
+    if(this.event.minSpeed > this.event.maxSpeed) throw ("Minimun speed is greater than maximum speed");
+    if(this.event.minSpeed < 10) this.alertsService.show(`Minimum speed is < 10 km/h. Is this correct?`, { classname: 'bg-warning text-light', delay: 3000 });
+    if(this.event.maxSpeed > 35) this.alertsService.show(`Maximum speed is > 35 km/h. Is this correct?`, { classname: 'bg-warning text-light', delay: 3000 });
+
   }
 
   async copyEvent() {
@@ -376,11 +388,6 @@ export class EventAdminComponent implements OnInit{
       });
     }
     
-    
-    
-    
-    
-
     this.map.addLayer(osm);
 
 
@@ -525,7 +532,7 @@ export class EventAdminComponent implements OnInit{
       let org:any = await this.rest.get('/orgData/memberDetails', {id: this.event.primaryOrganiserId}, {Authorization: localStorage.getItem("token")})
       cardDetails['phone'] = org.length > 0 ? org[0]['phone'] : "";
       console.log(cardDetails);
-      let data:any = await this.rest.post('/brevetcard', cardDetails, {accept:'application/pdf'});
+      let data:any = await this.rest.post('/pdf/brevetCard', cardDetails, {accept:'application/pdf'});
       var url = "data:application/pdf;base64," + data.data;
 
       fetch(url)

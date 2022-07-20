@@ -36,7 +36,7 @@ export class RefDataService {
   }
 
   eventAdminStatuses(): string[] {
-    return ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'];
+    return ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Validation', 'Closed'];
   } 
 
   eventDistances(): number[] {

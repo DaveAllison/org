@@ -1,0 +1,4 @@
+/* make table show clearly on mobile */
+table {
+    min-width: 800px;
+}

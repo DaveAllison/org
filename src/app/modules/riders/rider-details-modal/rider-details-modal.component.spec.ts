@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RiderStatusModalComponent } from './rider-status-modal.component';
+import { RiderDetailsModalComponent } from './rider-details-modal.component';
 
-describe('RiderStatusModalComponent', () => {
-  let component: RiderStatusModalComponent;
-  let fixture: ComponentFixture<RiderStatusModalComponent>;
+describe('RiderDetailsModalComponent', () => {
+  let component: RiderDetailsModalComponent;
+  let fixture: ComponentFixture<RiderDetailsModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RiderStatusModalComponent ]
+      declarations: [ RiderDetailsModalComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RiderStatusModalComponent);
+    fixture = TestBed.createComponent(RiderDetailsModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

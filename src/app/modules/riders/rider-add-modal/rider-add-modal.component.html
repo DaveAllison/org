@@ -8,31 +8,126 @@
 <div class="modal-body">
 
     <div class="container">
-        <div class="form-group row">
-            <input class="form-control col-md-3" type="number" step="1" min="0"  [(ngModel)]="memberId" placeholder="Member No." (change)="getMember()">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input"type="radio" name="entryType" value="registered" [(ngModel)]="entryType">
+            <label class="form-check-label">Registered</label>
         </div>
-        <div class="form" *ngIf="rider">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="entryType" value="non-registered" [(ngModel)]="entryType">
+            <label class="form-check-label">Not Registered</label>
+        </div>  
+        <hr>  
+        <section *ngIf="entryType === 'registered'">
+        
             <div class="form-group row">
-                <label class="col-md-5 col-form-label audax-label">Name:</label>
-                <input class="form-control col-md-6" type="text" [(ngModel)]="rider.name" disabled>
+                <div class="form-group col-md-6">
+                    <input class="form-control col-md-12" type="number" step="1" min="0"  [(ngModel)]="memberId" placeholder="Member No." (change)="getMember()">
+                </div>
+                <div class="form-group col-md-6">
+                    <input class="form-control col-md-12" type="text"  [(ngModel)]="postcode" placeholder="Or postcode" (change)="getMember()">
+                </div>
+                <div class="form-group col-md-12">
+                    <input class="form-control col-md-12" type="text"  [(ngModel)]="email" placeholder="Or email" (change)="getMember()">
+                </div>
+                
+            </div>
+            <div class="table-responsive-md table-sm">
+                <table *ngIf="members && members.length > 1" class="table table-striped table-borderless">
+                    <thead>
+                        <tr>
+                            <th width="20%">Rider No.</th>
+                            <th width="60%">Name</th>
+                            <th width="20%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let member of members">
+                            <td>{{member.memberId}}</td>
+                            <td>{{member.name}}</td>
+                            <td><button class="form-control col-md-12 btn btn-primary btn-sm" (click)="setRider(member)">Select</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form" *ngIf="rider">
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label audax-label">Name:</label>
+                    <input class="form-control col-md-6" type="text" [(ngModel)]="rider.name" disabled>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label audax-label">AUK Number:</label>
+                    <input class="form-control col-md-6" type="text" [(ngModel)]="rider.memberId" disabled>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label audax-label">E-mail:</label>
+                    <input class="form-control col-md-6" type="text" [(ngModel)]="rider.email" disabled>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label audax-label">Emergency Contact:</label>
+                    <input class="form-control col-md-6" type="text" [(ngModel)]="rider.emergencyContact" disabled>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-form-label audax-label">Emergency Phone:</label>
+                    <input class="form-control col-md-6" type="text" [(ngModel)]="rider.emergencyPhone" disabled>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5"></label>
+                    <button class="form-control col-md-3 btn btn-primary" (click)="save()">Add Rider?</button>
+                </div>
+            </div>
+        </section>
+
+        <section *ngIf="entryType === 'non-registered'">
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">First Name:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.firstname" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Last Name:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.surname" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Date of Birth:</label>
+                <input class="form-control col-md-6" type="date" [(ngModel)]="unregisteredRider.dateOfBirth">
             </div>
             <div class="form-group row">
                 <label class="col-md-5 col-form-label audax-label">E-mail:</label>
-                <input class="form-control col-md-6" type="text" [(ngModel)]="rider.email" disabled>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.email" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Phone:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.phone" required>
             </div>
             <div class="form-group row">
                 <label class="col-md-5 col-form-label audax-label">Emergency Contact:</label>
-                <input class="form-control col-md-6" type="text" [(ngModel)]="rider.emergencyContact" disabled>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.emergencyContact" required>
             </div>
             <div class="form-group row">
                 <label class="col-md-5 col-form-label audax-label">Emergency Phone:</label>
-                <input class="form-control col-md-6" type="text" [(ngModel)]="rider.emergencyPhone" disabled>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.emergencyPhone" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Address Line 1:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.addressLine1" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Address Line 2:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.addressLine2">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">Town:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.addressTown" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-5 col-form-label audax-label">PostCode:</label>
+                <input class="form-control col-md-6" type="text" [(ngModel)]="unregisteredRider.postcode" required>
             </div>
             <div class="form-group row">
                 <label class="col-md-5"></label>
                 <button class="form-control col-md-3 btn btn-primary" (click)="save()">Add Rider?</button>
             </div>
-        </div>
+            
+        </section>
     </div>
     
 </div>

@@ -7,25 +7,25 @@ import { RidersAaaComponent } from '../riders/riders-aaa/riders-aaa.component';
 import { RidersDiyComponent } from '../riders/riders-diy/riders-diy.component';
 import { RidersEceComponent } from '../riders/riders-ece/riders-ece.component';
 import { RidersRoutingModule } from './riders-routing.module';
-import { RiderStatusModalComponent } from './rider-status-modal/rider-status-modal.component';
 import { RiderAddModalComponent } from './rider-add-modal/rider-add-modal.component';
 import { ValidateComponent } from './validate/validate.component';
 import { IncidentListComponent } from './incident-list/incident-list.component';
 import { IncidentModalComponent } from './incident-modal/incident-modal.component';
+import { RiderDetailsModalComponent } from './rider-details-modal/rider-details-modal.component';
 
 
 
 @NgModule({
   declarations: [
     StartListComponent,
-    RiderStatusModalComponent,
     RiderAddModalComponent,
     RidersAaaComponent,
     RidersDiyComponent,
     RidersEceComponent,
     ValidateComponent,
     IncidentListComponent,
-    IncidentModalComponent
+    IncidentModalComponent,
+    RiderDetailsModalComponent
   ],
   imports: [
     CommonModule,

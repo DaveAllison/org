@@ -1,0 +1,66 @@
+<div class="modal-header">
+    <h4 class="modal-title">Rider Details</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+
+    <div class="container">
+      
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Auk No:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.firstname" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">First Name:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.firstname" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Last Name:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.surname" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Date of Birth:</label>
+            <input class="form-control col-md-6" type="date" [(ngModel)]="rider.dateOfBirth" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">E-mail:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.email" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Phone:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.phone" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Emergency Contact:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.emergencyContact" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Emergency Phone:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.emergencyPhone" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Address Line 1:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.addressLine1" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Address Line 2:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.addressLine2" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">Town:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.addressTown" disabled>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-5 col-form-label audax-label">PostCode:</label>
+            <input class="form-control col-md-6" type="text" [(ngModel)]="rider.postcode" disabled>
+        </div>
+       
+    </div>
+    
+</div>
+
+
+

@@ -54,7 +54,7 @@ export class DashboardComponent implements OnInit {
       this.isMentor = true;
       this.myEvents = false;
     }
-    this.getEvents(false);
+    this.getEvents(false); // *** Make these two calls into a single promise ***
     this.getNotes(false)
   }
 
