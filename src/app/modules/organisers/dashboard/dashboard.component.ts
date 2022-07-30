@@ -177,6 +177,7 @@ export class DashboardComponent implements OnInit {
           infoAnswer: null
         }
       ],
+      risks: null,
       registrationFeePaid: false,
       registrationOrderId: null
     }

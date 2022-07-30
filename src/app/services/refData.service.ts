@@ -12,11 +12,15 @@ export class RefDataService {
   }
 
   entryStatuses(): string[] {
-    return ['Entered', 'Finished', 'Did not start', 'Did not finish'];
+    return ['Entered', 'Finished', 'Did not finish', 'Void', 'Withdrawn'];
+  }
+
+  completedEntryStatuses(): string[] {
+    return ['Validated', 'Did not start', 'Did not finish', 'Void'];
   }
 
   incidentStatuses(): string[] {
-    return ['Minor', 'Major'];
+    return ['Nil Return', 'Minor', 'Major'];
   }
 
   controlTypes(): string[] {
@@ -27,8 +31,12 @@ export class RefDataService {
     return ['Solo', 'Tandem', 'Tricycle', 'Recumbent'];
   }
 
+  eventCategories(): string[] {
+    return ['BP', 'BR', 'BRM', 'BRM-PBP', 'LRM', 'RM'];
+  }
+
   eventOrgStatuses(): string[] {
-    return [, 'Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'];
+    return ['Project', 'Planned', 'Published', 'Ready', 'Cancelled', 'Closed'];
   }
 
   eventOrgLevels(): number[] {

@@ -29,8 +29,7 @@ export class IncidentListComponent implements OnInit {
   async ngOnInit() {
 
     try {
-
-      this.myEvents = await this.rest.get('/eventData/eventList', null, { 'Authorization': localStorage.getItem("token") });
+      this.myEvents = await this.rest.get('/eventData/eventList', {target: "riderList"}, { 'Authorization': localStorage.getItem("token") });
       if(this.myEvents.length === 1) { // Safari browser does not allow selection if only one event in list
         this.selectedEventId = this.myEvents[0]._id;
         this.getIncidents();
@@ -43,7 +42,8 @@ export class IncidentListComponent implements OnInit {
   }
 
   async getIncidents() {
-    this.incidents = await this.rest.get('/incidentData/list', { eventId: this.selectedEventId }, { 'Authorization': localStorage.getItem("token") });
+    if(!this.selectedEventId) this.incidents = [];
+    else this.incidents = await this.rest.get('/incidentData/list', { eventId: this.selectedEventId }, { 'Authorization': localStorage.getItem("token") });
   }
 
   addIncident() {
@@ -52,10 +52,21 @@ export class IncidentListComponent implements OnInit {
     this.showIncident(incident);
   }
 
-  showIncident(incident) {
+  async showIncident(incident) {
     
-    const modalRef = this.modalService.open(IncidentModalComponent, { size: 'xl' });
-    modalRef.componentInstance.incident = incident;
+    try {
+
+      let notes = await this.rest.get('/incidentData/notes', {incidentId: incident._id}, { 'Authorization': localStorage.getItem("token") });
+    
+    
+      const modalRef = this.modalService.open(IncidentModalComponent, { size: 'xl' });
+      modalRef.componentInstance.incident = incident;
+      modalRef.componentInstance.notes = notes;
+    }
+    catch (e) {
+      console.log(e);
+      this.alertsService.show(e.message, { classname: 'bg-danger text-light', delay: 3000 });
+    }
   }
 
 }

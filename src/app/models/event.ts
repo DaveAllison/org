@@ -52,5 +52,14 @@ export interface Event {
       }
     ],
     registrationFeePaid: boolean,
-    registrationOrderId: number
+    registrationOrderId: number,
+    risks: [
+      {
+        hazard: string,
+        mitigation: string,
+        createdBy: number, 
+        createdDate: Date,
+        updatedDate: Date
+      }
+    ]
   }

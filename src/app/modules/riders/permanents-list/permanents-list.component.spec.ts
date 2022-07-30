@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StartListComponent } from './start-list.component';
+import { PermanentsListComponent } from './permanents-list.component';
 
-describe('StartListComponent', () => {
-  let component: StartListComponent;
-  let fixture: ComponentFixture<StartListComponent>;
+describe('PermanentsListComponent', () => {
+  let component: PermanentsListComponent;
+  let fixture: ComponentFixture<PermanentsListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StartListComponent ]
+      declarations: [ PermanentsListComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StartListComponent);
+    fixture = TestBed.createComponent(PermanentsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

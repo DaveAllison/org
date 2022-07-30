@@ -26,14 +26,6 @@ export class IncidentModalComponent implements OnInit {
   async ngOnInit() {
       let dateTimeString = new Date(this.incident.incidentDate).toLocaleString("en-GB", { timeZone: 'Europe/London' });
       this.incidentDate = `${dateTimeString.substring(6,10)}-${dateTimeString.substring(3,5)}-${dateTimeString.substring(0,2)}`;
-      try {
-
-        this.notes = await this.rest.get('/incidentData/notes', {incidentId: this.incident._id}, { 'Authorization': localStorage.getItem("token") });
-      }
-      catch (e) {
-        console.log(e);
-        this.alertsService.show(e.message, { classname: 'bg-danger text-light', delay: 3000 });
-      }
   }
 
   async save(){
@@ -52,6 +44,11 @@ export class IncidentModalComponent implements OnInit {
     }
 
     //this.activeModal.dismiss();
+  }
+
+  setDescription(){
+    if(this.incident.severity === 'Nil Return') this.incident.summary = "No incidents to report";
+    else this.incident.summary = null;
   }
 
   async addNote(){

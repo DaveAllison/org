@@ -57,10 +57,7 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label audax-label">Category:</label>
                 <select class="form-select col-md-2" [(ngModel)]="event.category" (change)="setSpeed()" [disabled]="checkDisabled('a')">
-                    <option value='BP'>BP</option>
-                    <option value='BR'>BR</option>
-                    <option value='BRM'>BRM</option>
-                    <option value='RM'>RM</option>
+                    <option *ngFor="let category of refDataService.eventCategories()">{{category}}</option>
                 </select>
                 <label class="col-md-2 col-form-label audax-label">Event Name:</label>
                 <input class="form-control col-md-6" type="text" [(ngModel)]="event.name" name="name" required [disabled]="checkDisabled('a')">
@@ -210,7 +207,7 @@
                             <div class="col-md-1">
                                 <label class="mobile font-weight-bold">Proximity:</label><input
                                     class="form-control form-control-sm col-md-12" type="number" step="0.1" min="0"
-                                    [(ngModel)]="control.proximity" (focus)=selectControl(i) name="controlProximity"
+                                    [(ngModel)]="control.proximity" (focus)=selectControl(i) name="controlProximity" 
                                     required [disabled]="checkDisabled('a')">
                             </div>
                             <div class="col-md-2">
@@ -266,10 +263,95 @@
     <div [ngClass]="getSelectedTab('risks')">
         <div *ngIf="event">
             <div class="row audax-section-panel">
-                <h2>Risk Assesment</h2>
+                <h2>Risk Assessment</h2>
             </div>
-            <p>There's nothing here yet</p>
+            <h4>Route</h4>
+
+            <p>The vast majority of AUK events take place on public highways.  As such the relevant authorities are responsible for safety 
+                and maintenance and it is reasonable to assume that roads are fit for purpose when used with normal care and attention.  
+                Riders are reminded when they enter an event that they are bound by the rules of the road.</p>
+
+            <p>The Organisers' handbook gives advice on suitable routes including advice to avoid any substantial sections of busy major roads.  
+                You should read the handbook thoroughly before planning your route.</p>
+
+            <p>However, you might need to assess the impact that factors special to long-distance cycling  might have on the safety of your riders.  
+                These could include tiredness and lack of food or drink, particularly on longer events.  
+                Mitigations may include information/warning to prospective riders that your X-rated event has few facilities laid on, 
+                and perhaps having a supply of water at the start.  If you are providing facilities such as food or sleeping stops, these count as mitigations.</p>
+
+            <p>You cannot eliminate all danger.  There are elements of risk inherent in our events.  However, you must exercise a duty of care in ensuring to the best 
+                of your ability that your riders are fully aware of the nature of the event they are riding, and that it conforms to their reasonable expectations.</p>
+            <h4>Non-Riding Hazards</h4>
+            
+            <p>Hired halls and other premises such as private residences used as controls should be checked for general suitability (e.g., slip & trip hazards).</p>
+
+            <p>Food supplied should meet hygiene requirements - see handbook for guidelines.</p>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th width="20%">Hazard</th>
+                        <th width="80%">Mitigation</th>
+                    </tr>
+                </thead>
+               <tbody>
+                <tr>
+                    <td><p>Rider's Equipment</p><p>Rider’s health and stamina </p><p>Event terrain and weather</p></td>
+                    <td>AUK members receive written advice on training and equipment from a qualified cycle coach (see *website*). For non-members, 
+                        the relevant pages may be requested from organisers or downloaded from www.xxx.  AUK requires proof of passage at control places 
+                        averaging 50-80 km apart and the control times are designed to prevent racing (see Event Brevet Card). 
+                        Riders are reminded that some routes may be arduous and are encouraged to enter events in advance and 
+                        prepare by studying the route (see Entry Form). </td>
+                </tr>
+                <tr>
+                    <td><p>Other road users</p><p>Highway design or maintenance </p></td>
+                    <td>Riders are reminded that routes are on open public roads and that they are responsible for their own safety and 
+                        conduct (see Entry Form). Route conforms to guidelines in the organisers' handbook.</td>
+                </tr>
+                <tr>
+                    <td><p>Controls (food and rest places) Guidelines</p></td>
+                    <td>Organisers are reminded to keep catering simple unless a helper with food hygiene qualifications is present (see Organisers&#39; Guidelines) 
+                    </td>
+                </tr>
+                <tr>
+                    <td><p>Transmission of notifiable disease during the event, such as Covid-19</p></td>
+                    <td>Declaration on entry form that entrants are free from transmissible disease symptoms & not self-isolating.
+                        Guidance issued to organisers for safe practice at controls etc. (+ add your own measures in the test box below) 
+                        </td>
+                </tr>
+               </tbody>
+            </table>
+            <h4>List Hazards and Mitigations Particular to your Event Below</h4>
+            <p>Mitigation might include "Advise riders" or "Checkpoint added with vehicle & water/food")
+                 <strong>You MUST add something in the columns below even if it's only "no further measures required".</strong>  
+                Your delegate may ask you to revise your assessment.</p>
+            <div class="table-responsive-md table-sm">
+                <table class="table table-hover table-striped table-borderless">
+                    <thead>
+                        <tr>
+                            <th style="width:20%">Hazard</th>
+                            <th style="width:70%">Mitigation</th>
+                            <th style="width:10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="event.risks">
+                        <tr *ngFor="let risk of event.risks; let i = index">
+                            <td><textarea class="form-control col-md-12" [(ngModel)]="risk.hazard" [disabled]="checkDisabled('a')"></textarea></td>
+                            <td><textarea class="form-control col-md-12" [(ngModel)]="risk.mitigation" [disabled]="checkDisabled('a')"></textarea></td>
+                            <td><button class="btn btn-small btn-primary form-control" (click)="removeRisk(i)" [disabled]="checkDisabled('a')">Remove</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary form-control" (click)="addRisk()" value="Add Hazard" [disabled]="checkDisabled('a')">
+                </div>
+                
+            </div>
         </div>
+         
     </div>
 
     <div *ngIf="event" [ngClass]="getSelectedTab('summary')">

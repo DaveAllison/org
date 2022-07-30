@@ -1,13 +1,16 @@
 <div class="container">
     <h2>Incident Reporting</h2>
      <div class="form-group row">
-        <label class="col-md-2 col-form-label audax-label">Select an Event: </label>
-        <select class="form-select col-md-3" [(ngModel)]="selectedEventId" (change)="getIncidents()">
-            <option [ngValue]="myEvent._id" *ngFor="let myEvent of myEvents">{{myEvent._id}} - {{myEvent.name}}</option>
-        </select>
-        <label class="col-md-5 col-form-label audax-label"> </label>
-        <button *ngIf="selectedEventId" class="btn btn-primary form-control col-md-2"
-            (click)="addIncident()">Add Incident</button>
+        <div class="col-md-3">
+            <select class="form-control col-md-12" [(ngModel)]="selectedEventId" (change)="getIncidents()">
+                <option [ngValue]=null>Select an Event</option>
+                <option [ngValue]="myEvent._id" *ngFor="let myEvent of myEvents">{{myEvent._id}} - {{myEvent.name}}</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button *ngIf="selectedEventId" class="btn btn-primary form-control col-md-12"
+                (click)="addIncident()">Add Incident</button>
+        </div>
     </div>
     <div class="row audax-section-panel">
         <h2>Incident List</h2>

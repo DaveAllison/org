@@ -21,11 +21,11 @@ const statusMap = {
 }
 
 @Component({
-  selector: 'app-start-list',
-  templateUrl: './start-list.component.html',
-  styleUrls: ['./start-list.component.css']
+  selector: 'app-calendar-list',
+  templateUrl: './calendar-list.component.html',
+  styleUrls: ['./calendar-list.component.css']
 })
-export class StartListComponent implements OnInit {
+export class CalendarListComponent implements OnInit {
 
   finisherView: boolean = false;
   riders: any;
@@ -48,7 +48,7 @@ export class StartListComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      this.myEvents = await this.rest.get('/eventData/eventList', { target: "riderList" }, { 'Authorization': localStorage.getItem("token") });
+      this.myEvents = await this.rest.get('/eventData/eventList', { target: "riderList", eventType: "C" }, { 'Authorization': localStorage.getItem("token") });
     }
     catch (error) {
       console.log(error);
@@ -58,19 +58,21 @@ export class StartListComponent implements OnInit {
 
   async getRiders() {
     try {
-      this.eventInFuture = false;
-      this.allRidersUpdated = false;
-      if(new Date(this.selectedEvent.eventDate) > new Date()) this.eventInFuture = true;
-      let params = {eventId: this.selectedEvent._id};
-      this.riders = await this.rest.get('/riderData/list', params, { 'Authorization': localStorage.getItem("token") });
-      for (let rider of this.riders){
-        rider.name = `${rider.firstname} ${rider.surname}`
-        this.setRideTime(rider, rider.rideTime);
-        rider.changed = false;
-        if(rider.status === "Entered") this.allRidersUpdated = false;
+      if(!this.selectedEvent) this.riders = {};
+      else {
+        this.eventInFuture = false;
+        this.allRidersUpdated = false;
+        if(new Date(this.selectedEvent.eventDate) > new Date()) this.eventInFuture = true;
+        let params = {eventId: this.selectedEvent._id};
+        this.riders = await this.rest.get('/riderData/list', params, { 'Authorization': localStorage.getItem("token") });
+        for (let rider of this.riders){
+          rider.name = `${rider.firstname} ${rider.surname}`
+          this.setRideTime(rider, rider.rideTime);
+          rider.changed = false;
+        }
+        this.filterRiders();
+        this.allRidersUpdated = this.checkComplete();
       }
-      this.filterRiders();
-      if(!this.riders.find(x => x.status === "Entered")) this.allRidersUpdated = true;
     }
     catch (error) {
       console.log(error);
@@ -91,14 +93,13 @@ export class StartListComponent implements OnInit {
   download(){
     let downloadRiders;
     if(this.finisherView){
-      downloadRiders = "entryId,memberId,name,status,days,hours,mins\n";
+      downloadRiders = "entryId,memberId,name,status,hours,mins\n";
       for (let rider of this.riders){
         let downloadRider = [
           rider._id,
           rider.memberId,
           rider.name,
           '',
-          0,
           0,
           0
         ];
@@ -151,13 +152,16 @@ export class StartListComponent implements OnInit {
     if(rider.status === "Entered") this.allRidersUpdated = false;
   }
 
+  checkComplete(): boolean{
+    return (!this.riders.find(x => x.status === "Entered") && !this.riders.find(x => x.changed === true));
+  }
+
   timeToInt(rider) : number {
-    return (rider.rideDays*24*60 + rider.rideHours*60 + rider.rideMins);
+    return (rider.rideHours*60 + rider.rideMins);
   }
 
   setRideTime(rider, rideTime){
-    rider.rideDays = Math.floor(rideTime/(24*60));
-    rider.rideHours = Math.floor((rideTime%(24*60))/60);
+    rider.rideHours = Math.floor(rideTime/60);
     rider.rideMins = rideTime%60;
   }
 
@@ -199,16 +203,16 @@ export class StartListComponent implements OnInit {
           this.uploadErrors.push(`Record ${index} invalid status code`);
           continue;
         }
-        if(isNaN(record[4]) || isNaN(record[5]) || isNaN(record[6])){
+        if(isNaN(record[4]) || isNaN(record[5])){
           this.uploadErrors.push(`Record ${index} invalid time`);
           continue;
         }
         results.push({
           _id: parseInt(record[0]),
           eventId: this.selectedEvent._id,
-          status: statusMap[record[3]],
+          status: statusMap[record[3].toLowerCase()],
           rideDate: this.selectedEvent.eventDate,
-          rideTime: parseInt(record[4])*24*60 + parseInt(record[5])*60 + parseInt(record[6]),
+          rideTime: parseInt(record[4])*60 + parseInt(record[5]),
           additionalAAAPoints: 0,
 
         });
@@ -267,7 +271,7 @@ export class StartListComponent implements OnInit {
       await this.rest.post('/riderData', rider, { 'Authorization': localStorage.getItem("token") });
       this.alertsService.show("Rider record updated", { classname: 'bg-success text-light', delay: 3000 });
       rider.changed = false;
-      if(!this.riders.find(x => x.status === "Entered")) this.allRidersUpdated = true;
+      this.allRidersUpdated = this.checkComplete();
     }
     catch(e){
       if (e.error && e.error.message) this.alertsService.show(e.error.message, { classname: 'bg-danger text-light', delay: 3000 });

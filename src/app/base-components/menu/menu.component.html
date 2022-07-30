@@ -25,17 +25,21 @@
                 <a class="nav-link text-dark" href="#" (click)="false" ngbDropdownToggle>Riders</a>
                 <div ngbDropdownMenu>
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
-                    ngbDropdownItem routerLink="/riders/start-list">Rider List</a>
+                    ngbDropdownItem routerLink="/riders/calendar-list">Calendar Riders</a>
+                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
+                    ngbDropdownItem routerLink="/riders/permanents-list">Permanent Riders</a>
                   <!--<a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
                     ngbDropdownItem routerLink="/riders/riders-aaa">AAA Riders List</a>
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
                     ngbDropdownItem routerLink="/riders/riders-ece">ECE Riders List</a>
                   <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
-                    ngbDropdownItem routerLink="/riders/riders-diy">DIY Riders List</a>
-                  <a *ngIf="globals.user && globals.user.adminGroup"
+                    ngbDropdownItem routerLink="/riders/riders-diy">DIY Riders List</a>-->
+                  <a *ngIf="globals.user && globals.user.groups && globals.user.groups.includes('validator')"
+                    ngbDropdownItem routerLink="/riders/calendar-validate">Calendar Validation</a>
+                  <a *ngIf="globals.user && globals.user.groups && globals.user.groups.includes('validator')"
+                    ngbDropdownItem routerLink="/riders/permanents-validate">Permanents Validation</a>
+                    <a *ngIf="globals.user && globals.user.adminGroup"
                     ngbDropdownItem routerLink="/riders/incident-list">Incident Reporting</a>
-                  <a *ngIf="globals.user && (globals.user.adminGroup || (globals.user.groups && globals.user.groups.includes('validator')))"
-                    ngbDropdownItem routerLink="/riders/validate">Validations</a>-->
                 </div>
               </div>
 

@@ -30,12 +30,9 @@ export class EventAdminComponent implements OnInit{
   selectedEventId: string = null;
   controls: string
   _id: string;
-  //eventDistances: any = [50, 100, 150, 200, 300, 400, 500, 600, 1000, 1100, 1200, 1300, 1400, 1500, 2000, 3000, 4000];
   paymentMethods: any = ['Post', 'Online', 'Both'];
   eventStatuses: any = [];
   controlTypes: any = [];
-  //orgStatuses: any = ['Void', 'Draft', 'Submitted'];
-  //adminStatuses: any = ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed'];
   eventDate: string;
   entryOpenDate: string;
   entryCloseDate: string;
@@ -46,19 +43,8 @@ export class EventAdminComponent implements OnInit{
   uploadBuffer: Object = { track: null, notes: null};
   selectedTab: string = "";
   notes: any = [];
-
-  /*
-  statusMap: any = {
-    a: {
-      "event-organiser":['Void', 'Draft', 'Submitted'],
-      "event-admin": ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed']
-    },
-    b: {
-      "event-organiser":['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed'],
-      "event-admin": ['Void', 'Draft', 'Submitted', 'Open', 'Cancelled', 'Closed']
-    }
-  };
-  */
+  initialControls: string = null; // very simple change detection process!
+  initialRisks: string = null;
 
   // map features
   map: L.Map;
@@ -132,11 +118,11 @@ export class EventAdminComponent implements OnInit{
 
 
       // Create a controls string
-      let controlsArray = [];
-      for (let control of this.event['controls']) {
-        controlsArray.push(control['name']);
-      }
-      this.controls = controlsArray.join(", ");
+      // let controlsArray = [];
+      // for (let control of this.event['controls']) {
+      //   controlsArray.push(control['name']);
+      // }
+      // this.controls = controlsArray.join(", ");
 
       // populate map details - but only if the event has a start location
       if (this.event.start.latitude && this.event.start.longitude) {
@@ -144,7 +130,9 @@ export class EventAdminComponent implements OnInit{
         this.setMarkers(true);
         this.selectedTab = "summary";
       }
-
+      this.initialControls= JSON.stringify(this.event.controls);
+      this.initialRisks= JSON.stringify(this.event.risks);
+      
     }
     catch (e) {
       console.log(e);
@@ -169,7 +157,12 @@ export class EventAdminComponent implements OnInit{
 
       this.checkEvent();
 
-      let response = await this.rest.post('/eventData', this.event, { 'Authorization': localStorage.getItem("token") });
+      let params = {event: this.event, controlsChanged: false, risksChanged: false};
+
+      if(JSON.stringify(this.event.controls) !== this.initialControls) params.controlsChanged = true;
+      if(JSON.stringify(this.event.risks) !== this.initialRisks) params.risksChanged = true;
+      console.log(params);
+      let response = await this.rest.post('/eventData', params, { 'Authorization': localStorage.getItem("token") });
 
       if (!this.event._id) {
         this.alertsService.show(`Event record added. Event ID is ${response['_id']}.`);
@@ -177,6 +170,8 @@ export class EventAdminComponent implements OnInit{
         this.myEvents.push({ _id: this.event._id, name: this.event.name });
       }
       else this.alertsService.show("Event record updated", { classname: 'bg-success text-light', delay: 3000 });
+      this.initialControls = JSON.stringify(this.event.controls);
+      this.initialRisks = JSON.stringify(this.event.risks);
     }
     catch (e) {
       console.log(e);
@@ -238,7 +233,7 @@ export class EventAdminComponent implements OnInit{
     else this.event.start = { description: "Not defined", latitude: 51.47432, longitude: 0.0001 };
     
     // set start speed for BRM events.
-    if(this.event.category === "BRM"){
+    if(this.event.category.match(/BRM/)){
       this.setSpeed();
       this.alertsService.show("This is a BRM event - setting minimum speed", { classname: 'bg-warning text-light', delay: 3000 });
     }
@@ -262,6 +257,8 @@ export class EventAdminComponent implements OnInit{
       this.checkEvent();
       let result = await this.rest.post('/eventData', this.event, { 'Authorization': localStorage.getItem("token") });
       this.event._id = result['_id'];
+      this.initialControls = JSON.stringify(this.event.controls);
+      this.initialRisks = JSON.stringify(this.event.risks);
       this.alertsService.show("Event record copied. The Event Director must approve this event before it can be ridden", { classname: 'bg-success text-light', delay: 3000 });
     }
     catch (e) {
@@ -344,6 +341,7 @@ export class EventAdminComponent implements OnInit{
           infoAnswer: null
         }
       ],
+      risks: null,
       registrationFeePaid: false,
       registrationOrderId: null
     }
@@ -548,6 +546,14 @@ export class EventAdminComponent implements OnInit{
     }
   }
 
+  removeRisk(index){
+    this.event.risks.splice(index,1);
+  }
+
+  addRisk(){
+    this.event.risks.push({hazard:"Enter hazard", mitigation: "Enter mitigation", createdBy: null, createdDate: null, updatedDate: null})
+  }
+
   async checkClashes() {
     let allEvents = <any[]>(await this.rest.get('/eventData/clashList', {eventDate:this.eventDate}, {Authorization: localStorage.getItem("token")}));
     const modalRef = this.modalService.open(EventClashModalComponent, { size: 'xl' });
@@ -555,5 +561,7 @@ export class EventAdminComponent implements OnInit{
     modalRef.componentInstance.allEvents = allEvents;
     modalRef.componentInstance.eventDate = this.eventDate; // NB this is a string
   }
+
+
 }
 
